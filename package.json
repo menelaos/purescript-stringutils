@@ -1,0 +1,26 @@
+{
+  "name": "purescript-stringutils",
+  "version": "0.0.0",
+  "description": "String Utility Functions",
+  "scripts": {
+    "build": "psc \"src/**/*.purs\" \"bower_components/purescript-*/src/**/*.purs\"",
+    "test": "psc \"src/**/*.purs\" \"bower_components/purescript-*/src/**/*.purs\" \"test/**/*.purs\" && psc-bundle \"output/**/*.js\" --module Test.Main --main Test.Main | node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/menelaos/purescript-stringutils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/menelaos/purescript-stringutils/issues"
+  },
+  "keywords": [
+    "purescript",
+    "string",
+    "utils"
+  ],
+  "author": "Andreas Schacker",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "bower": "^1.7.9"
+  }
+}
