@@ -10,6 +10,12 @@ exports._codePointAt = function (just) {
   };
 };
 
+exports.endsWith = function (searchString) {
+  return function (s) {
+    return s.endsWith(searchString);
+  };
+};
+
 exports.escapeRegex = function (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };

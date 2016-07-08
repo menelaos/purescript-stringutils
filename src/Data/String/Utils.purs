@@ -1,5 +1,6 @@
 module Data.String.Utils
   ( codePointAt
+  , endsWith
   , escapeRegex
   , filter
   , replaceAll
@@ -28,6 +29,9 @@ foreign import _codePointAt
   -> Int
   -> String
   -> Maybe Int
+
+-- | Determines whether the second string ends with the first one.
+foreign import endsWith :: String -> String -> Boolean
 
 -- | Escape a string so that it can be used as a literal string within a regular
 -- | expression.

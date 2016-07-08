@@ -4,8 +4,8 @@ where
 
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
-import Data.String.Utils         ( codePointAt, escapeRegex, filter, replaceAll
-                                 , startsWith, startsWith'
+import Data.String.Utils         ( codePointAt, endsWith, escapeRegex, filter
+                                 , replaceAll, startsWith, startsWith'
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -21,6 +21,19 @@ testStringUtils = do
   assert $ codePointAt 2 "ab" === Nothing
   assert $ codePointAt 0 "∀"  === Just 8704
   assert $ codePointAt 1 "∀ε" === Just 949
+
+  log "endsWith"
+  let
+    endsWithSubsetProp :: String -> Result
+    endsWithSubsetProp str = endsWith str str === true
+
+    endsWithEmptyStringProp :: String -> Result
+    endsWithEmptyStringProp str = endsWith "" str === true
+
+  assert $ endsWith "Script" "PureScript" === true
+  assert $ endsWith "happy ending" "火垂るの墓" === false
+  quickCheck endsWithSubsetProp
+  quickCheck endsWithEmptyStringProp
 
   log "escapeRegex"
   assert $ escapeRegex "."  === "\\."
