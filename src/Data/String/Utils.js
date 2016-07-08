@@ -19,3 +19,11 @@ exports.startsWith = function (searchString) {
     return s.startsWith(searchString);
   };
 };
+
+exports.startsWithP = function (searchString) {
+  return function (position) {
+    return function (s) {
+      return s.startsWith(searchString, position);
+    };
+  };
+};

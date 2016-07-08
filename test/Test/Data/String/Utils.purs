@@ -5,7 +5,7 @@ where
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String.Utils         ( codePointAt, escapeRegex, filter, replaceAll
-                                 , startsWith
+                                 , startsWith, startsWith'
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -81,3 +81,21 @@ testStringUtils = do
   assert $ startsWith "Pure" "PureScript" === true
   quickCheck startsWithSubsetProp
   quickCheck startsWithEmptyStringProp
+
+  log "startsWith'"
+  let
+    -- Note that negative `position` arguments have the same effect as `0`
+    -- Cf. http://www.ecma-international.org/ecma-262/6.0/#sec-string.prototype.startswith
+    startsWith'EmptyStringProp :: String -> Int -> Result
+    startsWith'EmptyStringProp str n = startsWith' "" n str === true
+
+  assert $ startsWith' "Script" 4 "PureScript" === true
+  quickCheck startsWith'EmptyStringProp
+
+  log "startsWith & startsWith'"
+  let
+    startsWith'ZeroProp :: String -> String -> Result
+    startsWith'ZeroProp searchString str =
+      startsWith' searchString 0 str === startsWith searchString str
+
+  quickCheck startsWith'ZeroProp

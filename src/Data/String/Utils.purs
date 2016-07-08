@@ -4,6 +4,7 @@ module Data.String.Utils
   , filter
   , replaceAll
   , startsWith
+  , startsWith'
   )
 where
 
@@ -51,3 +52,10 @@ replaceAll old new str = replace (mkRegex old) new str
 
 -- | Determines whether the second argument starts with the first one.
 foreign import startsWith :: String -> String -> Boolean
+
+-- | Determines whether a string starts with a certain substring at a given
+-- | position.
+startsWith' :: String -> Int -> String -> Boolean
+startsWith' = startsWithP
+
+foreign import startsWithP :: String -> Int -> String -> Boolean
