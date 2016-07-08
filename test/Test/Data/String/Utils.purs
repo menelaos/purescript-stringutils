@@ -4,7 +4,9 @@ where
 
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
-import Data.String.Utils         (codePointAt, escapeRegex, filter, replaceAll)
+import Data.String.Utils         ( codePointAt, escapeRegex, filter, replaceAll
+                                 , startsWith
+                                 )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
 
@@ -67,3 +69,15 @@ testStringUtils = do
 
   assert $ replaceAll "." "" "Q.E.D." === "QED"
   quickCheck replaceAllIdProp
+
+  log "startsWith"
+  let
+    startsWithSubsetProp :: String -> Result
+    startsWithSubsetProp str = startsWith str str === true
+
+    startsWithEmptyStringProp :: String -> Result
+    startsWithEmptyStringProp str = startsWith "" str === true
+
+  assert $ startsWith "Pure" "PureScript" === true
+  quickCheck startsWithSubsetProp
+  quickCheck startsWithEmptyStringProp

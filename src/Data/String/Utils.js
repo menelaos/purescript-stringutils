@@ -13,3 +13,9 @@ exports._codePointAt = function (just) {
 exports.escapeRegex = function (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
+
+exports.startsWith = function (searchString) {
+  return function (s) {
+    return s.startsWith(searchString);
+  };
+};

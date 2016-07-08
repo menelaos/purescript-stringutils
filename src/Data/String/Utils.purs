@@ -3,6 +3,7 @@ module Data.String.Utils
   , escapeRegex
   , filter
   , replaceAll
+  , startsWith
   )
 where
 
@@ -47,3 +48,6 @@ replaceAll old new str = replace (mkRegex old) new str
     -- Make sure that ALL occurrences and not only the first one get replaced
     flags :: RegexFlags
     flags = noFlags { global = true }
+
+-- | Determines whether the second argument starts with the first one.
+foreign import startsWith :: String -> String -> Boolean
