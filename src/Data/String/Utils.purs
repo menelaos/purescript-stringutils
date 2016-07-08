@@ -1,5 +1,6 @@
 module Data.String.Utils
   ( codePointAt
+  , escapeRegex
   , filter
   )
 where
@@ -21,6 +22,10 @@ foreign import _codePointAt
   -> Int
   -> String
   -> Maybe Int
+
+-- | Escape a string so that it can be used as a literal string within a regular
+-- | expression.
+foreign import escapeRegex :: String -> String
 
 -- | Keep only those characters that satisfy the predicate.
 filter :: (Char -> Boolean) -> String -> String

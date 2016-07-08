@@ -4,7 +4,7 @@ where
 
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
-import Data.String.Utils         (codePointAt, filter)
+import Data.String.Utils         (codePointAt, escapeRegex, filter)
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
 
@@ -19,6 +19,22 @@ testStringUtils = do
   assert $ codePointAt 2 "ab" === Nothing
   assert $ codePointAt 0 "∀"  === Just 8704
   assert $ codePointAt 1 "∀ε" === Just 949
+
+  log "escapeRegex"
+  assert $ escapeRegex "."  === "\\."
+  assert $ escapeRegex "*"  === "\\*"
+  assert $ escapeRegex "+"  === "\\+"
+  assert $ escapeRegex "?"  === "\\?"
+  assert $ escapeRegex "^"  === "\\^"
+  assert $ escapeRegex "$"  === "\\$"
+  assert $ escapeRegex "{"  === "\\{"
+  assert $ escapeRegex "}"  === "\\}"
+  assert $ escapeRegex "("  === "\\("
+  assert $ escapeRegex ")"  === "\\)"
+  assert $ escapeRegex "|"  === "\\|"
+  assert $ escapeRegex "["  === "\\["
+  assert $ escapeRegex "]"  === "\\]"
+  assert $ escapeRegex "\\" === "\\\\"
 
   log "filter"
   let
