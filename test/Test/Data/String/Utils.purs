@@ -4,7 +4,7 @@ where
 
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
-import Data.String.Utils         (codePointAt, escapeRegex, filter)
+import Data.String.Utils         (codePointAt, escapeRegex, filter, replaceAll)
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
 
@@ -59,3 +59,11 @@ testStringUtils = do
   quickCheck filterDistributiveProp
   quickCheck filterEmptyStringProp
   quickCheck filterNukeProp
+
+  log "replaceAll"
+  let
+    replaceAllIdProp :: String -> String -> Result
+    replaceAllIdProp old str = replaceAll old old str === str
+
+  assert $ replaceAll "." "" "Q.E.D." === "QED"
+  quickCheck replaceAllIdProp

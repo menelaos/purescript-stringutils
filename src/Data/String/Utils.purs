@@ -2,11 +2,15 @@ module Data.String.Utils
   ( codePointAt
   , escapeRegex
   , filter
+  , replaceAll
   )
 where
 
+import Data.Either       (fromRight)
 import Data.Maybe        (Maybe(Just, Nothing))
 import Data.String       (fromCharArray, toCharArray)
+import Data.String.Regex (Regex, RegexFlags, noFlags, replace, regex)
+import Partial.Unsafe    (unsafePartial)
 import Prelude
 
 import Data.Array as Array
@@ -30,3 +34,16 @@ foreign import escapeRegex :: String -> String
 -- | Keep only those characters that satisfy the predicate.
 filter :: (Char -> Boolean) -> String -> String
 filter p = fromCharArray <<< Array.filter p <<< toCharArray
+
+-- | Replaces all occurences of the first argument with the second argument.
+replaceAll :: String -> String -> String -> String
+replaceAll old new str = replace (mkRegex old) new str
+-- replaceAll old = replace (mkRegex old)
+  where
+    -- Helper function to construct a `Regex` from an input string
+    mkRegex :: String -> Regex
+    mkRegex str = unsafePartial (fromRight (regex (escapeRegex str) flags))
+
+    -- Make sure that ALL occurrences and not only the first one get replaced
+    flags :: RegexFlags
+    flags = noFlags { global = true }
