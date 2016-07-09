@@ -1,6 +1,7 @@
 module Data.String.Utils
   ( codePointAt
   , endsWith
+  , endsWith'
   , escapeRegex
   , filter
   , replaceAll
@@ -32,6 +33,13 @@ foreign import _codePointAt
 
 -- | Determines whether the second string ends with the first one.
 foreign import endsWith :: String -> String -> Boolean
+
+-- | Determines whether the second string ends with the first one
+-- | but search as if the string were only as long as the given argument.
+endsWith' :: String -> Int -> String -> Boolean
+endsWith' = endsWithP
+
+foreign import endsWithP :: String -> Int -> String -> Boolean
 
 -- | Escape a string so that it can be used as a literal string within a regular
 -- | expression.

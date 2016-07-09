@@ -16,6 +16,14 @@ exports.endsWith = function (searchString) {
   };
 };
 
+exports.endsWithP = function (searchString) {
+  return function (position) {
+    return function (s) {
+      return s.endsWith(searchString, position);
+    };
+  };
+};
+
 exports.escapeRegex = function (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
