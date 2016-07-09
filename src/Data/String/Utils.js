@@ -41,3 +41,9 @@ exports.startsWithP = function (searchString) {
     };
   };
 };
+
+exports.stripChars = function (chars) {
+  return function (s) {
+    return s.replace(RegExp("[" + chars + "]", "g"), "");
+  };
+};

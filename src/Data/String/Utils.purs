@@ -7,6 +7,7 @@ module Data.String.Utils
   , replaceAll
   , startsWith
   , startsWith'
+  , stripChars
   )
 where
 
@@ -71,3 +72,12 @@ startsWith' :: String -> Int -> String -> Boolean
 startsWith' = startsWithP
 
 foreign import startsWithP :: String -> Int -> String -> Boolean
+
+-- | Strip a set of characters from a string.
+-- | This function is case-sensitive.
+-- |
+-- | ```purescript
+-- | stripChars "aeiou" "PureScript" == "PrScrpt"
+-- | stripChars "AEIOU" "PureScript" == "PureScript"
+-- | ```
+foreign import stripChars :: String -> String -> String

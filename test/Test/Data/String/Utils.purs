@@ -7,7 +7,7 @@ import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               (length)
 import Data.String.Utils         ( codePointAt, endsWith, endsWith'
                                  , escapeRegex, filter, replaceAll, startsWith
-                                 , startsWith'
+                                 , startsWith', stripChars
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -134,3 +134,17 @@ testStringUtils = do
       startsWith' searchString 0 str === startsWith searchString str
 
   quickCheck startsWith'ZeroProp
+
+  log "stripChars"
+  let
+    stripCharsIdempotenceProp :: String -> String -> Result
+    stripCharsIdempotenceProp chars =
+      (===) <$> (stripChars chars <<< stripChars chars) <*> stripChars chars
+
+    stripCharsEmptyStringProp :: String -> Result
+    stripCharsEmptyStringProp = (===) <$> id <*> stripChars ""
+
+  assert $ stripChars "Script" "JavaScript" === "Java" -- Seriously?
+  assert $ stripChars "PURESCRIPT" "purescript" === "purescript"
+  quickCheck stripCharsIdempotenceProp
+  quickCheck stripCharsEmptyStringProp
