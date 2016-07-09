@@ -5,6 +5,10 @@
     "Andreas Schacker"
   ],
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/menelaos/purescript-stringutils"
+  },
   "keywords": [
     "purescript",
     "string",
