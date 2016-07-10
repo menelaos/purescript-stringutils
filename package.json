@@ -1,6 +1,5 @@
 {
   "name": "purescript-stringutils",
-  "version": "0.0.0",
   "description": "String Utility Functions",
   "scripts": {
     "build": "psc \"src/**/*.purs\" \"bower_components/purescript-*/src/**/*.purs\"",
