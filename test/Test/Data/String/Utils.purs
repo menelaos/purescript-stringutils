@@ -8,6 +8,7 @@ import Data.String               as Data.String
 import Data.String.Utils         ( codePointAt, endsWith, endsWith'
                                  , escapeRegex, filter, length, replaceAll
                                  , startsWith, startsWith', stripChars
+                                 , toCharArray
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -91,6 +92,22 @@ testStringUtils = do
     filterEmptyStringProp :: (Char -> Boolean) -> Result
     filterEmptyStringProp f = filter f "" === ""
 
+    allButPureScript :: Char -> Boolean
+    allButPureScript 'ℙ' = true
+    allButPureScript '∪' = true
+    allButPureScript '𝕣' = true
+    allButPureScript 'ⅇ' = true
+    allButPureScript 'Ⴝ' = true
+    allButPureScript '𝚌' = true
+    allButPureScript '𝕣' = true
+    allButPureScript 'ⅈ' = true
+    allButPureScript '𝚙' = true
+    allButPureScript '†' = true
+    allButPureScript _ = false
+
+  -- This assertion is to make sure that `filter` operates on code points
+  -- and not code units.
+  assert $ filter allButPureScript "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙† rocks!" === "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
   quickCheck filterIdProp
   quickCheck filterIdempotenceProp
   quickCheck filterDistributiveProp
@@ -157,3 +174,8 @@ testStringUtils = do
   assert $ stripChars "PURESCRIPT" "purescript" === "purescript"
   quickCheck stripCharsIdempotenceProp
   quickCheck stripCharsEmptyStringProp
+
+  log "toCharArray"
+  assert $ toCharArray "" === []
+  assert $ toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === ['ℙ', '∪', '𝕣', 'ⅇ', 'Ⴝ', '𝚌', '𝕣', 'ⅈ', '𝚙', '†']
+

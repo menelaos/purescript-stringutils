@@ -51,3 +51,7 @@ exports.stripChars = function (chars) {
     return s.replace(RegExp("[" + chars + "]", "g"), "");
   };
 };
+
+exports.toCharArray = function (str) {
+  return Array.from(str);
+};

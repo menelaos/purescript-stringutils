@@ -9,12 +9,13 @@ module Data.String.Utils
   , startsWith
   , startsWith'
   , stripChars
+  , toCharArray
   )
 where
 
 import Data.Either       (fromRight)
 import Data.Maybe        (Maybe(Just, Nothing))
-import Data.String       (fromCharArray, toCharArray)
+import Data.String       (fromCharArray)
 import Data.String.Regex (Regex, RegexFlags, noFlags, replace, regex)
 import Partial.Unsafe    (unsafePartial)
 import Prelude
@@ -94,3 +95,21 @@ foreign import startsWithP :: String -> Int -> String -> Boolean
 -- | stripChars "AEIOU" "PureScript" == "PureScript"
 -- | ```
 foreign import stripChars :: String -> String -> String
+
+-- | Converts a string to an array of Unicode code points.
+-- | Note that this function is different from
+-- | `Data.String.toCharArray` in `purescript-strings` which
+-- | converts a string to an array of 16-bit code units.
+-- | The difference becomes apparent when converting strings
+-- | that contain characters which are internally represented
+-- | as surrogate pairs.
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Data.String.Utils
+-- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
+-- |
+-- | -- Data.String
+-- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == ["ℙ", "∪", "�", "�", "ⅇ", "Ⴝ", "�", "�", "�", "�", "ⅈ", "�", "�", "†"]
+-- | ```
+foreign import toCharArray :: String -> Array Char
