@@ -4,10 +4,10 @@ where
 
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
-import Data.String               (length)
+import Data.String               as Data.String
 import Data.String.Utils         ( codePointAt, endsWith, endsWith'
-                                 , escapeRegex, filter, replaceAll, startsWith
-                                 , startsWith', stripChars
+                                 , escapeRegex, filter, length, replaceAll
+                                 , startsWith, startsWith', stripChars
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -52,8 +52,8 @@ testStringUtils = do
   log "endsWith & endsWith'"
   let
     endsWith'LengthProp :: String -> String -> Result
-    endsWith'LengthProp searchString str =
-      endsWith' searchString (length str) str === endsWith searchString str
+    endsWith'LengthProp search str =
+      endsWith' search (Data.String.length str) str === endsWith search str
 
   quickCheck endsWith'LengthProp
 
@@ -96,6 +96,15 @@ testStringUtils = do
   quickCheck filterDistributiveProp
   quickCheck filterEmptyStringProp
   quickCheck filterNukeProp
+
+  log "length"
+  let
+    lengthNonNegativeProp :: String -> Result
+    lengthNonNegativeProp str = length str >= 0 === true
+
+  assert $ length "" === 0
+  assert $ length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === 10
+  quickCheck lengthNonNegativeProp
 
   log "replaceAll"
   let

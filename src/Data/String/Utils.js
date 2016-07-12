@@ -28,6 +28,10 @@ exports.escapeRegex = function (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
 
+exports.length = function (str) {
+  return Array.from(str).length;
+};
+
 exports.startsWith = function (searchString) {
   return function (s) {
     return s.startsWith(searchString);

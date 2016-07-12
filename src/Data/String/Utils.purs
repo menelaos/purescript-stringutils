@@ -4,6 +4,7 @@ module Data.String.Utils
   , endsWith'
   , escapeRegex
   , filter
+  , length
   , replaceAll
   , startsWith
   , startsWith'
@@ -49,6 +50,18 @@ foreign import escapeRegex :: String -> String
 -- | Keep only those characters that satisfy the predicate.
 filter :: (Char -> Boolean) -> String -> String
 filter p = fromCharArray <<< Array.filter p <<< toCharArray
+
+-- | Returns the number of Unicode code points in a string.
+-- | Note that this function correctly accounts for Unicode symbols that
+-- | are made up of surrogate pairs. If you want a simple wrapper around
+-- | JavaScript's `string.length` property, you should use the
+-- | `Data.String.length` function from `purescript-strings`.
+-- |
+-- | ```purescript
+-- | length "PureScript" == 10
+-- | length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == 10    -- 14 with `Data.String.length`
+-- | ```
+foreign import length :: String -> Int
 
 -- | Replaces all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String
