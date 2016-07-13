@@ -28,6 +28,12 @@ exports.escapeRegex = function (str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
 
+exports.includes = function (searchString) {
+  return function (str) {
+    return str.includes(searchString);
+  };
+};
+
 exports.length = function (str) {
   return Array.from(str).length;
 };

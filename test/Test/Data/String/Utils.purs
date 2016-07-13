@@ -7,9 +7,9 @@ import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), codePointAt
                                  , endsWith, endsWith', escapeRegex, filter
-                                 , length, normalize, normalize', replaceAll
-                                 , startsWith, startsWith', stripChars
-                                 , toCharArray
+                                 , includes, length, normalize, normalize'
+                                 , replaceAll, startsWith, startsWith'
+                                 , stripChars, toCharArray
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -114,6 +114,19 @@ testStringUtils = do
   quickCheck filterDistributiveProp
   quickCheck filterEmptyStringProp
   quickCheck filterNukeProp
+
+  log "includes"
+  let
+    includesSubsetProp :: String -> Result
+    includesSubsetProp str = includes str str === true
+
+    includesEmptyStringProp :: String -> Result
+    includesEmptyStringProp str = includes "" str === true
+
+  assert $ includes "Merchant" "The Merchant of Venice" === true
+  assert $ includes "Duncan" "The Merchant of Venice" === false
+  quickCheck includesSubsetProp
+  quickCheck includesEmptyStringProp
 
   log "length"
   let

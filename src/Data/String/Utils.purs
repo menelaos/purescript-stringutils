@@ -5,6 +5,7 @@ module Data.String.Utils
   , endsWith'
   , escapeRegex
   , filter
+  , includes
   , length
   , normalize
   , normalize'
@@ -54,6 +55,9 @@ foreign import escapeRegex :: String -> String
 -- | Keep only those characters that satisfy the predicate.
 filter :: (Char -> Boolean) -> String -> String
 filter p = fromCharArray <<< Array.filter p <<< toCharArray
+
+-- | Determines whether the second arguments contains the first one.
+foreign import includes :: String -> String -> Boolean
 
 -- | Returns the number of Unicode code points in a string.
 -- | Note that this function correctly accounts for Unicode symbols that
