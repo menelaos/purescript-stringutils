@@ -6,9 +6,9 @@ import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( codePointAt, endsWith, endsWith'
-                                 , escapeRegex, filter, length, replaceAll
-                                 , startsWith, startsWith', stripChars
-                                 , toCharArray
+                                 , escapeRegex, filter, length, normalize
+                                 , replaceAll, startsWith, startsWith'
+                                 , stripChars, toCharArray
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -122,6 +122,31 @@ testStringUtils = do
   assert $ length "" === 0
   assert $ length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === 10
   quickCheck lengthNonNegativeProp
+
+  log "normalize"
+  -- Due to incomplete fonts, the strings in the following assertions may
+  -- appear to be different from one another.
+  -- They are canonically equivalent, however.
+
+  -- Å: U+00C5
+  -- Å: U+212B
+  assert $ normalize "Å" === normalize "Å"
+
+  -- Åström: U+00C5        U+0073 U+0074 U+0072 U+00F6        U+006D
+  -- Åström: U+0041 U+030A U+0073 U+0074 U+0072 U+006F U+0308 U+006D
+  assert $ normalize "Åström" === normalize "Åström"
+
+  -- á: U+00E1
+  -- á: U+0061 U+0301
+  assert $ normalize "á" === normalize "á"
+
+  -- Amélie: U+0041 U+006d U+00e9        U+006c U+0069 U+0065
+  -- Amélie: U+0041 U+006d U+0065 U+0301 U+006c U+0069 U+0065
+  assert $ normalize "Amélie" === normalize "Amélie"
+
+  -- ḱṷṓn: U+1E31 U+1E77 U+1E53                             U+006E
+  -- ḱṷṓn: U+006B U+0301 U+0075 U+032D U+006F U+0304 U+0301 U+006E
+  assert $ normalize "ḱṷṓn" === normalize "ḱṷṓn"
 
   log "replaceAll"
   let

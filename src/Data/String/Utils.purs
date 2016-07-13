@@ -5,6 +5,7 @@ module Data.String.Utils
   , escapeRegex
   , filter
   , length
+  , normalize
   , replaceAll
   , startsWith
   , startsWith'
@@ -63,6 +64,10 @@ filter p = fromCharArray <<< Array.filter p <<< toCharArray
 -- | length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == 10    -- 14 with `Data.String.length`
 -- | ```
 foreign import length :: String -> Int
+
+-- | Returns the `Normalization Form C` of a given string.
+-- | This is the form that is recommended by the W3C.
+foreign import normalize :: String -> String
 
 -- | Replaces all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String

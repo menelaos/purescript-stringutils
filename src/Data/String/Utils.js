@@ -32,6 +32,10 @@ exports.length = function (str) {
   return Array.from(str).length;
 };
 
+exports.normalize = function (str) {
+  return str.normalize();
+};
+
 exports.startsWith = function (searchString) {
   return function (s) {
     return s.startsWith(searchString);
