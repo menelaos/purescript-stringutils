@@ -5,10 +5,11 @@ where
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
-import Data.String.Utils         ( codePointAt, endsWith, endsWith'
-                                 , escapeRegex, filter, length, normalize
-                                 , replaceAll, startsWith, startsWith'
-                                 , stripChars, toCharArray
+import Data.String.Utils         ( NormalizationForm(NFC), codePointAt
+                                 , endsWith, endsWith', escapeRegex, filter
+                                 , length, normalize, normalize', replaceAll
+                                 , startsWith, startsWith', stripChars
+                                 , toCharArray
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -147,6 +148,13 @@ testStringUtils = do
   -- ḱṷṓn: U+1E31 U+1E77 U+1E53                             U+006E
   -- ḱṷṓn: U+006B U+0301 U+0075 U+032D U+006F U+0304 U+0301 U+006E
   assert $ normalize "ḱṷṓn" === normalize "ḱṷṓn"
+
+  log "normalize & normalize'"
+  let
+    nfcProp :: String -> Result
+    nfcProp = (===) <$> normalize <*> normalize' NFC
+
+  quickCheck nfcProp
 
   log "replaceAll"
   let

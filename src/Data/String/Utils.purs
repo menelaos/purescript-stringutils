@@ -1,11 +1,13 @@
 module Data.String.Utils
-  ( codePointAt
+  ( NormalizationForm(..)
+  , codePointAt
   , endsWith
   , endsWith'
   , escapeRegex
   , filter
   , length
   , normalize
+  , normalize'
   , replaceAll
   , startsWith
   , startsWith'
@@ -68,6 +70,21 @@ foreign import length :: String -> Int
 -- | Returns the `Normalization Form C` of a given string.
 -- | This is the form that is recommended by the W3C.
 foreign import normalize :: String -> String
+
+-- | Possible Unicode Normalization Forms
+data NormalizationForm = NFC | NFD | NFKC | NFKD
+
+instance showNormalizationForm :: Show NormalizationForm where
+  show NFC  = "NFC"
+  show NFD  = "NFD"
+  show NFKC = "NFKC"
+  show NFKD = "NFKD"
+
+-- | Returns a given Unicode Normalization Form of a string.
+normalize' :: NormalizationForm -> String -> String
+normalize' = _normalizeP <<< show
+
+foreign import _normalizeP :: String -> String -> String
 
 -- | Replaces all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String

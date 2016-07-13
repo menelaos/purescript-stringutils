@@ -36,6 +36,12 @@ exports.normalize = function (str) {
   return str.normalize();
 };
 
+exports._normalizeP = function (normalizationForm) {
+  return function (str) {
+    return str.normalize(normalizationForm);
+  };
+};
+
 exports.startsWith = function (searchString) {
   return function (s) {
     return s.startsWith(searchString);
