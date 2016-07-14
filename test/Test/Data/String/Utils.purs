@@ -5,7 +5,7 @@ where
 import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
-import Data.String.Utils         ( NormalizationForm(NFC), codePointAt
+import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , endsWith, endsWith', escapeRegex, filter
                                  , includes, length, normalize, normalize'
                                  , replaceAll, startsWith, startsWith'
@@ -16,6 +16,14 @@ import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
 
 testStringUtils :: SC () Unit
 testStringUtils = do
+  log "charAt"
+  let
+    charAtEmptyStringProp :: Int -> Result
+    charAtEmptyStringProp n = charAt n "" === Nothing
+
+  assert $ charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === Just '𝕣'
+  quickCheck charAtEmptyStringProp
+
   log "codePointAt"
   assert $ codePointAt 0 ""   === Nothing
   assert $ codePointAt 0 "a"  === Just 97

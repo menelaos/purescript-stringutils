@@ -1,5 +1,6 @@
 module Data.String.Utils
   ( NormalizationForm(..)
+  , charAt
   , codePointAt
   , endsWith
   , endsWith'
@@ -25,6 +26,22 @@ import Partial.Unsafe    (unsafePartial)
 import Prelude
 
 import Data.Array as Array
+
+-- | Returns the character at the given index, if the index is within bounds.
+-- | Note that this function handles Unicode as you would expect.
+-- | If you want a simple wrapper around JavaScript's `String.prototype.charAt`
+-- | method, you should use the `Data.String.charAt` function from
+-- | `purescript-strings.`
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Data.String.Utils.charAt
+-- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '𝕣'
+-- | -- Data.String.charAt
+-- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '�'
+-- | ```
+charAt :: Int -> String -> Maybe Char
+charAt n str = Array.index (toCharArray str) n
 
 -- | Returns the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
