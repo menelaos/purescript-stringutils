@@ -8,6 +8,7 @@ module Data.String.Utils
   , filter
   , includes
   , length
+  , mapChars
   , normalize
   , normalize'
   , replaceAll
@@ -87,6 +88,20 @@ foreign import includes :: String -> String -> Boolean
 -- | length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == 10    -- 14 with `Data.String.length`
 -- | ```
 foreign import length :: String -> Int
+
+-- | Returns the string obtained by applying the mapping function to each
+-- | character (i.e. Unicode code point) of the input string.
+-- | Note that this is probably not what you want as Unicode code points are
+-- | not necessarily the same as user-perceived characters (grapheme clusters).
+-- | Only use this function if you know what you are doing.
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Mapping over what appears to be six characters...
+-- | mapChars (const 'x') "Åström" === "xxxxxxxx" -- See? Don't use this!
+-- | ```
+mapChars :: (Char -> Char) -> String -> String
+mapChars f = fromCharArray <<< map f <<< toCharArray
 
 -- | Returns the `Normalization Form C` of a given string.
 -- | This is the form that is recommended by the W3C.

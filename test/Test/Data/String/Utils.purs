@@ -7,9 +7,9 @@ import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , endsWith, endsWith', escapeRegex, filter
-                                 , includes, length, normalize, normalize'
-                                 , replaceAll, startsWith, startsWith'
-                                 , stripChars, toCharArray
+                                 , includes, length, mapChars, normalize
+                                 , normalize', replaceAll, startsWith
+                                 , startsWith', stripChars, toCharArray
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -144,6 +144,11 @@ testStringUtils = do
   assert $ length "" === 0
   assert $ length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === 10
   quickCheck lengthNonNegativeProp
+
+  log "mapChars"
+  -- Mapping over individual characters (Unicode code points) in e.g.
+  -- unnormalized strings results in unexpected (yet correct) behaviour.
+  assert $ mapChars (const 'x') "Åström" === "xxxxxxxx"
 
   log "normalize"
   -- Due to incomplete fonts, the strings in the following assertions may
