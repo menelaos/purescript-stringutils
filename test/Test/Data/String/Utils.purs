@@ -6,10 +6,11 @@ import Control.Monad.Eff.Console (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
-                                 , endsWith, endsWith', escapeRegex, filter
-                                 , includes, length, mapChars, normalize
-                                 , normalize', replaceAll, startsWith
-                                 , startsWith', stripChars, toCharArray
+                                 , codePointAt', endsWith, endsWith'
+                                 , escapeRegex, filter, includes, length
+                                 , mapChars, normalize, normalize', replaceAll
+                                 , startsWith, startsWith', stripChars
+                                 , toCharArray
                                  )
 import Prelude
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
@@ -25,14 +26,30 @@ testStringUtils = do
   quickCheck charAtEmptyStringProp
 
   log "codePointAt"
-  assert $ codePointAt 0 ""   === Nothing
-  assert $ codePointAt 0 "a"  === Just 97
-  assert $ codePointAt 1 "a"  === Nothing
-  assert $ codePointAt 0 "ab" === Just 97
-  assert $ codePointAt 1 "ab" === Just 98
-  assert $ codePointAt 2 "ab" === Nothing
-  assert $ codePointAt 0 "∀"  === Just 8704
-  assert $ codePointAt 1 "∀ε" === Just 949
+  assert $ codePointAt  0 ""           === Nothing
+  assert $ codePointAt  0 "a"          === Just 97
+  assert $ codePointAt  1 "a"          === Nothing
+  assert $ codePointAt  0 "ab"         === Just 97
+  assert $ codePointAt  1 "ab"         === Just 98
+  assert $ codePointAt  2 "ab"         === Nothing
+  assert $ codePointAt  0 "∀"          === Just 8704
+  assert $ codePointAt  1 "∀ε"         === Just 949
+  assert $ codePointAt  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === Just 120792
+  assert $ codePointAt  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === Just 120793
+  assert $ codePointAt 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === Nothing
+
+  log "codePointAt'"
+  assert $ codePointAt'  0 ""           === Nothing
+  assert $ codePointAt'  0 "a"          === Just 97
+  assert $ codePointAt'  1 "a"          === Nothing
+  assert $ codePointAt'  0 "ab"         === Just 97
+  assert $ codePointAt'  1 "ab"         === Just 98
+  assert $ codePointAt'  2 "ab"         === Nothing
+  assert $ codePointAt'  0 "∀"          === Just 8704
+  assert $ codePointAt'  1 "∀ε"         === Just 949
+  assert $ codePointAt'  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === Just 120792
+  assert $ codePointAt'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === Just 57304
+  assert $ codePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === Just 57313
 
   log "endsWith"
   let

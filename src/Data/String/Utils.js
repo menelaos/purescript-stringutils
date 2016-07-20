@@ -4,6 +4,19 @@ exports._codePointAt = function (just) {
   return function (nothing) {
     return function (i) {
       return function (s) {
+        var codePointArray = Array.from(s);
+        var isWithinRange  = i >= 0 && i < codePointArray.length;
+
+        return isWithinRange ? just(codePointArray[i].codePointAt(0)) : nothing;
+      };
+    };
+  };
+};
+
+exports._codePointAtP = function (just) {
+  return function (nothing) {
+    return function (i) {
+      return function (s) {
         return i >= 0 && i < s.length ? just(s.codePointAt(i)) : nothing;
       };
     };

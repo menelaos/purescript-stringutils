@@ -2,6 +2,7 @@ module Data.String.Utils
   ( NormalizationForm(..)
   , charAt
   , codePointAt
+  , codePointAt'
   , endsWith
   , endsWith'
   , escapeRegex
@@ -46,10 +47,58 @@ charAt n str = Array.index (toCharArray str) n
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
+-- | Note that this function handles Unicode as you would expect.
+-- | If you want a simple wrapper around JavaScript's
+-- | `String.prototype.codePointAt` method, you should use `codePointAt'`.
+-- |
+-- | Example:
+-- | ```purescript
+-- | codePointAt   0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120792
+-- | codePointAt   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120793
+-- | codePointAt   2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120794
+-- | codePointAt  19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Nothing
+-- |
+-- | codePointAt'  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120793
+-- | codePointAt'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 57304   -- Surrogate code point
+-- | codePointAt'  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120794
+-- | codePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 57313   -- Surrogate code point
+-- | ```
 codePointAt :: Int -> String -> Maybe Int
 codePointAt = _codePointAt Just Nothing
 
 foreign import _codePointAt
+  :: (∀ a. a -> Maybe a)
+  -> (∀ a. Maybe a)
+  -> Int
+  -> String
+  -> Maybe Int
+
+-- | Return the Unicode code point value of the character at the given index,
+-- | if the index is within bounds.
+-- | This function is a simple wrapper around JavaScript's
+-- | `String.prototype.codePointAt` method. This means that if the index does
+-- | not point to the beginning of a valid surrogate pair, the code unit at
+-- | the index (i.e. the Unicode code point of the surrogate pair half) is
+-- | returned instead.
+-- | If you want to treat a string as an array of Unicode Code Points, use
+-- | `codePointAt` instead.
+-- |
+-- | Example:
+-- | ```purescript
+-- | codePointAt'  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120793
+-- | codePointAt'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 57304   -- Surrogate code point
+-- | codePointAt'  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120794
+-- | codePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 57313   -- Surrogate code point
+-- |
+-- | codePointAt   0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120792
+-- | codePointAt   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120793
+-- | codePointAt   2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120794
+-- | codePointAt  19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Nothing
+-- | ```
+codePointAt' :: Int -> String -> Maybe Int
+codePointAt' = _codePointAtP Just Nothing
+
+foreign import _codePointAtP
   :: (∀ a. a -> Maybe a)
   -> (∀ a. Maybe a)
   -> Int
@@ -165,9 +214,11 @@ foreign import stripChars :: String -> String -> String
 -- | Example:
 -- | ```purescript
 -- | -- Data.String.Utils
--- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
+-- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
+-- |   == ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
 -- |
 -- | -- Data.String
--- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == ["ℙ", "∪", "�", "�", "ⅇ", "Ⴝ", "�", "�", "�", "�", "ⅈ", "�", "�", "†"]
+-- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" ==
+-- |   ["ℙ", "∪", "�", "�", "ⅇ", "Ⴝ", "�", "�", "�", "�", "ⅈ", "�", "�", "†"]
 -- | ```
 foreign import toCharArray :: String -> Array Char
