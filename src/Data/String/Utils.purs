@@ -28,7 +28,7 @@ import Prelude
 
 import Data.Array as Array
 
--- | Returns the character at the given index, if the index is within bounds.
+-- | Return the character at the given index, if the index is within bounds.
 -- | Note that this function handles Unicode as you would expect.
 -- | If you want a simple wrapper around JavaScript's `String.prototype.charAt`
 -- | method, you should use the `Data.String.charAt` function from
@@ -44,7 +44,7 @@ import Data.Array as Array
 charAt :: Int -> String -> Maybe Char
 charAt n str = Array.index (toCharArray str) n
 
--- | Returns the Unicode code point value of the character at the given index,
+-- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
 codePointAt :: Int -> String -> Maybe Int
 codePointAt = _codePointAt Just Nothing
@@ -56,10 +56,10 @@ foreign import _codePointAt
   -> String
   -> Maybe Int
 
--- | Determines whether the second string ends with the first one.
+-- | Determine whether the second string ends with the first one.
 foreign import endsWith :: String -> String -> Boolean
 
--- | Determines whether the second string ends with the first one
+-- | Determine whether the second string ends with the first one
 -- | but search as if the string were only as long as the given argument.
 endsWith' :: String -> Int -> String -> Boolean
 endsWith' = endsWithP
@@ -74,10 +74,10 @@ foreign import escapeRegex :: String -> String
 filter :: (Char -> Boolean) -> String -> String
 filter p = fromCharArray <<< Array.filter p <<< toCharArray
 
--- | Determines whether the second arguments contains the first one.
+-- | Determine whether the second arguments contains the first one.
 foreign import includes :: String -> String -> Boolean
 
--- | Returns the number of Unicode code points in a string.
+-- | Return the number of Unicode code points in a string.
 -- | Note that this function correctly accounts for Unicode symbols that
 -- | are made up of surrogate pairs. If you want a simple wrapper around
 -- | JavaScript's `string.length` property, you should use the
@@ -89,7 +89,7 @@ foreign import includes :: String -> String -> Boolean
 -- | ```
 foreign import length :: String -> Int
 
--- | Returns the string obtained by applying the mapping function to each
+-- | Return the string obtained by applying the mapping function to each
 -- | character (i.e. Unicode code point) of the input string.
 -- | Note that this is probably not what you want as Unicode code points are
 -- | not necessarily the same as user-perceived characters (grapheme clusters).
@@ -103,7 +103,7 @@ foreign import length :: String -> Int
 mapChars :: (Char -> Char) -> String -> String
 mapChars f = fromCharArray <<< map f <<< toCharArray
 
--- | Returns the `Normalization Form C` of a given string.
+-- | Return the `Normalization Form C` of a given string.
 -- | This is the form that is recommended by the W3C.
 foreign import normalize :: String -> String
 
@@ -116,13 +116,13 @@ instance showNormalizationForm :: Show NormalizationForm where
   show NFKC = "NFKC"
   show NFKD = "NFKD"
 
--- | Returns a given Unicode Normalization Form of a string.
+-- | Return a given Unicode Normalization Form of a string.
 normalize' :: NormalizationForm -> String -> String
 normalize' = _normalizeP <<< show
 
 foreign import _normalizeP :: String -> String -> String
 
--- | Replaces all occurences of the first argument with the second argument.
+-- | Replace all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String
 replaceAll old new str = replace (mkRegex old) new str
 -- replaceAll old = replace (mkRegex old)
@@ -135,10 +135,10 @@ replaceAll old new str = replace (mkRegex old) new str
     flags :: RegexFlags
     flags = noFlags { global = true }
 
--- | Determines whether the second argument starts with the first one.
+-- | Determine whether the second argument starts with the first one.
 foreign import startsWith :: String -> String -> Boolean
 
--- | Determines whether a string starts with a certain substring at a given
+-- | Determine whether a string starts with a certain substring at a given
 -- | position.
 startsWith' :: String -> Int -> String -> Boolean
 startsWith' = startsWithP
@@ -154,7 +154,7 @@ foreign import startsWithP :: String -> Int -> String -> Boolean
 -- | ```
 foreign import stripChars :: String -> String -> String
 
--- | Converts a string to an array of Unicode code points.
+-- | Convert a string to an array of Unicode code points.
 -- | Note that this function is different from
 -- | `Data.String.toCharArray` in `purescript-strings` which
 -- | converts a string to an array of 16-bit code units.
