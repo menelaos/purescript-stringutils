@@ -1,6 +1,6 @@
 "use strict";
 
-exports._codePointAt = function (just) {
+function _codePointAt (just) {
   return function (nothing) {
     return function (i) {
       return function (s) {
@@ -13,7 +13,7 @@ exports._codePointAt = function (just) {
   };
 };
 
-exports._codePointAtP = function (just) {
+function _codePointAtP (just) {
   return function (nothing) {
     return function (i) {
       return function (s) {
@@ -23,13 +23,13 @@ exports._codePointAtP = function (just) {
   };
 };
 
-exports.endsWith = function (searchString) {
+function endsWith (searchString) {
   return function (s) {
     return s.endsWith(searchString);
   };
 };
 
-exports.endsWithP = function (searchString) {
+function endsWithP (searchString) {
   return function (position) {
     return function (s) {
       return s.endsWith(searchString, position);
@@ -37,37 +37,37 @@ exports.endsWithP = function (searchString) {
   };
 };
 
-exports.escapeRegex = function (str) {
+function escapeRegex (str) {
   return str.replace(/[.*+?^${}()|[\]\-\\]/g, "\\$&");
 };
 
-exports.includes = function (searchString) {
+function includes (searchString) {
   return function (str) {
     return str.includes(searchString);
   };
 };
 
-exports.length = function (str) {
+function length (str) {
   return Array.from(str).length;
 };
 
-exports.normalize = function (str) {
+function normalize (str) {
   return str.normalize();
 };
 
-exports._normalizeP = function (normalizationForm) {
+function _normalizeP (normalizationForm) {
   return function (str) {
     return str.normalize(normalizationForm);
   };
 };
 
-exports.startsWith = function (searchString) {
+function startsWith (searchString) {
   return function (s) {
     return s.startsWith(searchString);
   };
 };
 
-exports.startsWithP = function (searchString) {
+function startsWithP (searchString) {
   return function (position) {
     return function (s) {
       return s.startsWith(searchString, position);
@@ -75,12 +75,26 @@ exports.startsWithP = function (searchString) {
   };
 };
 
-exports.stripChars = function (chars) {
+function stripChars (chars) {
   return function (s) {
     return s.replace(RegExp("[" + chars + "]", "g"), "");
   };
 };
 
-exports.toCharArray = function (str) {
+function toCharArray (str) {
   return Array.from(str);
 };
+
+exports._codePointAt  = _codePointAt;
+exports._codePointAtP = _codePointAtP;
+exports.endsWith      = endsWith;
+exports.endsWithP     = endsWithP;
+exports.escapeRegex   = escapeRegex;
+exports.includes      = includes;
+exports.length        = length;
+exports.normalize     = normalize;
+exports._normalizeP   = _normalizeP;
+exports.startsWith    = startsWith;
+exports.startsWithP   = startsWithP;
+exports.stripChars    = stripChars;
+exports.toCharArray   = toCharArray;
