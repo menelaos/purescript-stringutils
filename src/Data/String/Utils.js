@@ -77,7 +77,7 @@ function startsWithP (searchString) {
 
 function stripChars (chars) {
   return function (s) {
-    return s.replace(RegExp("[" + chars + "]", "g"), "");
+    return s.replace(RegExp("[" + escapeRegex(chars) + "]", "g"), "");
   };
 };
 

@@ -248,8 +248,9 @@ testStringUtils = do
     stripCharsEmptyStringProp :: String -> Result
     stripCharsEmptyStringProp = (===) <$> id <*> stripChars ""
 
-  assert $ stripChars "Script" "JavaScript" === "Java" -- Seriously?
+  assert $ stripChars "Script"     "JavaScript" === "Java" -- Seriously?
   assert $ stripChars "PURESCRIPT" "purescript" === "purescript"
+  assert $ stripChars "a-z"        "-abc--xyz-" === "bcxy"
   quickCheck stripCharsIdempotenceProp
   quickCheck stripCharsEmptyStringProp
 
