@@ -38,7 +38,7 @@ exports.endsWithP = function (searchString) {
 };
 
 exports.escapeRegex = function (str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return str.replace(/[.*+?^${}()|[\]\-\\]/g, "\\$&");
 };
 
 exports.includes = function (searchString) {
