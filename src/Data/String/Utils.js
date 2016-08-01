@@ -61,6 +61,25 @@ function _normalizeP (normalizationForm) {
   };
 };
 
+function _repeat (just) {
+  return function (nothing) {
+    return function (n) {
+      return function (str) {
+        var result;
+
+        try {
+          result = just(str.repeat(n));
+        }
+        catch (error) {
+          result = nothing;
+        }
+
+        return result;
+      };
+    };
+  };
+};
+
 function startsWith (searchString) {
   return function (s) {
     return s.startsWith(searchString);
@@ -94,6 +113,7 @@ exports.includes      = includes;
 exports.length        = length;
 exports.normalize     = normalize;
 exports._normalizeP   = _normalizeP;
+exports._repeat       = _repeat;
 exports.startsWith    = startsWith;
 exports.startsWithP   = startsWithP;
 exports.stripChars    = stripChars;

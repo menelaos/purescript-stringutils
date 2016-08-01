@@ -12,6 +12,7 @@ module Data.String.Utils
   , mapChars
   , normalize
   , normalize'
+  , repeat
   , replaceAll
   , startsWith
   , startsWith'
@@ -147,7 +148,7 @@ foreign import length :: String -> Int
 -- | Example:
 -- | ```purescript
 -- | -- Mapping over what appears to be six characters...
--- | mapChars (const 'x') "Åström" === "xxxxxxxx" -- See? Don't use this!
+-- | mapChars (const 'x') "Åström" == "xxxxxxxx" -- See? Don't use this!
 -- | ```
 mapChars :: (Char -> Char) -> String -> String
 mapChars f = fromCharArray <<< map f <<< toCharArray
@@ -170,6 +171,26 @@ normalize' :: NormalizationForm -> String -> String
 normalize' = _normalizeP <<< show
 
 foreign import _normalizeP :: String -> String -> String
+
+-- | Return a string that contains the specified number of copies of the input
+-- | string concatenated together. Return `Nothing` if the repeat count is
+-- | negative or if the resulting string would overflow the maximum string size.
+-- |
+-- | Example:
+-- | ```purescript
+-- | repeat 3 "𝟞" == Just "𝟞𝟞𝟞"
+-- | repeat (-1) "PureScript" == Nothing
+-- | repeat 2147483647 "PureScript" == Nothing
+-- | ```
+repeat :: Int -> String -> Maybe String
+repeat = _repeat Just Nothing
+
+foreign import _repeat
+  :: (∀ a. a -> Maybe a)
+  -> (∀ a. Maybe a)
+  -> Int
+  -> String
+  -> Maybe String
 
 -- | Replace all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String

@@ -8,11 +8,14 @@ import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
                                  , escapeRegex, filter, includes, length
-                                 , mapChars, normalize, normalize', replaceAll
-                                 , startsWith, startsWith', stripChars
-                                 , toCharArray
+                                 , mapChars, normalize, normalize', repeat
+                                 , replaceAll, startsWith, startsWith'
+                                 , stripChars, toCharArray
                                  )
 import Prelude
+import Test.Input                ( NegativeInt(NegativeInt)
+                                 , NonNegativeInt(NonNegativeInt)
+                                 )
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
 
 testStringUtils :: SC () Unit
@@ -200,6 +203,27 @@ testStringUtils = do
     nfcProp = (===) <$> normalize <*> normalize' NFC
 
   quickCheck nfcProp
+
+  log "repeat"
+  let
+    repeatZeroProp :: String -> Result
+    repeatZeroProp str = repeat 0 str === Just ""
+
+    repeatOnceProp :: String -> Result
+    repeatOnceProp = (===) <$> repeat 1 <*> Just
+
+    repeatNegativeProp :: NegativeInt -> String -> Result
+    repeatNegativeProp (NegativeInt n) str = repeat n str === Nothing
+
+    repeatEmptyStringProp :: NonNegativeInt -> Result
+    repeatEmptyStringProp (NonNegativeInt n) = repeat n "" === Just ""
+
+  assert $ repeat 3 "𝟞" === Just "𝟞𝟞𝟞"
+  assert $ repeat 2147483647 "𝟞" === Nothing
+  quickCheck repeatZeroProp
+  quickCheck repeatOnceProp
+  quickCheck repeatNegativeProp
+  quickCheck repeatEmptyStringProp
 
   log "replaceAll"
   let
