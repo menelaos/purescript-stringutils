@@ -104,6 +104,17 @@ function toCharArray (str) {
   return Array.from(str);
 };
 
+function unsafeRepeat (n) {
+  return function (str) {
+    try {
+      return str.repeat(n);
+    }
+    catch (error) {
+      throw new Error("Data.String.Utils.unsafeRepeat: Invalid count");
+    }
+  };
+};
+
 exports._codePointAt  = _codePointAt;
 exports._codePointAtP = _codePointAtP;
 exports.endsWith      = endsWith;
@@ -118,3 +129,4 @@ exports.startsWith    = startsWith;
 exports.startsWithP   = startsWithP;
 exports.stripChars    = stripChars;
 exports.toCharArray   = toCharArray;
+exports.unsafeRepeat  = unsafeRepeat;

@@ -10,7 +10,7 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , escapeRegex, filter, includes, length
                                  , mapChars, normalize, normalize', repeat
                                  , replaceAll, startsWith, startsWith'
-                                 , stripChars, toCharArray
+                                 , stripChars, toCharArray, unsafeRepeat
                                  )
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
@@ -282,3 +282,18 @@ testStringUtils = do
   assert $ toCharArray "" === []
   assert $ toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === ['ℙ', '∪', '𝕣', 'ⅇ', 'Ⴝ', '𝚌', '𝕣', 'ⅈ', '𝚙', '†']
 
+  log "unsafeRepeat"
+  let
+    unsafeRepeatZeroProp :: String -> Result
+    unsafeRepeatZeroProp str = unsafeRepeat 0 str === ""
+
+    unsafeRepeatOnceProp :: String -> Result
+    unsafeRepeatOnceProp = (===) <$> unsafeRepeat 1 <*> id
+
+    unsafeRepeatEmptyStringProp :: NonNegativeInt -> Result
+    unsafeRepeatEmptyStringProp (NonNegativeInt n) = unsafeRepeat n "" === ""
+
+  assert $ unsafeRepeat 3 "𝟞" === "𝟞𝟞𝟞"
+  quickCheck unsafeRepeatZeroProp
+  quickCheck unsafeRepeatOnceProp
+  quickCheck unsafeRepeatEmptyStringProp

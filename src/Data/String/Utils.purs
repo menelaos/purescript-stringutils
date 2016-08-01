@@ -18,6 +18,7 @@ module Data.String.Utils
   , startsWith'
   , stripChars
   , toCharArray
+  , unsafeRepeat
   )
 where
 
@@ -243,3 +244,10 @@ foreign import stripChars :: String -> String -> String
 -- |   ["ℙ", "∪", "�", "�", "ⅇ", "Ⴝ", "�", "�", "�", "�", "ⅈ", "�", "�", "†"]
 -- | ```
 foreign import toCharArray :: String -> Array Char
+
+-- | Return a string that contains the specified number of copies of the input
+-- | string concatenated together.
+-- |
+-- | **Unsafe:** Throws runtime exception if the repeat count is negative or if
+-- | the resulting string would overflow the maximum string size.
+foreign import unsafeRepeat :: Int -> String -> String
