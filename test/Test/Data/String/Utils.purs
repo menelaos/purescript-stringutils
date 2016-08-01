@@ -10,7 +10,8 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , escapeRegex, filter, includes, length
                                  , mapChars, normalize, normalize', repeat
                                  , replaceAll, startsWith, startsWith'
-                                 , stripChars, toCharArray, unsafeRepeat
+                                 , stripChars, toCharArray, unsafeCodePointAt
+                                 , unsafeCodePointAt', unsafeRepeat
                                  )
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
@@ -281,6 +282,25 @@ testStringUtils = do
   log "toCharArray"
   assert $ toCharArray "" === []
   assert $ toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === ['ℙ', '∪', '𝕣', 'ⅇ', 'Ⴝ', '𝚌', '𝕣', 'ⅈ', '𝚙', '†']
+
+  log "unsafeCodePointAt"
+  assert $ unsafeCodePointAt  0 "a"          === 97
+  assert $ unsafeCodePointAt  0 "ab"         === 97
+  assert $ unsafeCodePointAt  1 "ab"         === 98
+  assert $ unsafeCodePointAt  0 "∀"          === 8704
+  assert $ unsafeCodePointAt  1 "∀ε"         === 949
+  assert $ unsafeCodePointAt  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === 120792
+  assert $ unsafeCodePointAt  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === 120793
+
+  log "unsafeCodePointAt'"
+  assert $ unsafeCodePointAt'  0 "a"          === 97
+  assert $ unsafeCodePointAt'  0 "ab"         === 97
+  assert $ unsafeCodePointAt'  1 "ab"         === 98
+  assert $ unsafeCodePointAt'  0 "∀"          === 8704
+  assert $ unsafeCodePointAt'  1 "∀ε"         === 949
+  assert $ unsafeCodePointAt'  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === 120792
+  assert $ unsafeCodePointAt'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === 57304
+  assert $ unsafeCodePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === 57313
 
   log "unsafeRepeat"
   let

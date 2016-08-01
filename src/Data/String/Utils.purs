@@ -18,6 +18,8 @@ module Data.String.Utils
   , startsWith'
   , stripChars
   , toCharArray
+  , unsafeCodePointAt
+  , unsafeCodePointAt'
   , unsafeRepeat
   )
 where
@@ -244,6 +246,55 @@ foreign import stripChars :: String -> String -> String
 -- |   ["ℙ", "∪", "�", "�", "ⅇ", "Ⴝ", "�", "�", "�", "�", "ⅈ", "�", "�", "†"]
 -- | ```
 foreign import toCharArray :: String -> Array Char
+
+-- | Return the Unicode code point value of the character at the given index,
+-- | if the index is within bounds.
+-- | Note that this function handles Unicode as you would expect.
+-- | If you want a simple (unsafe) wrapper around JavaScript's
+-- | `String.prototype.codePointAt` method, you should use `unsafeCodePointAt'`.
+-- |
+-- | **Unsafe:** Throws runtime exception if the index is not within bounds.
+-- |
+-- | Example:
+-- | ```purescript
+-- | unsafeCodePointAt   0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120792
+-- | unsafeCodePointAt   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120793
+-- | unsafeCodePointAt   2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120794
+-- | unsafeCodePointAt  19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" -- Error
+-- |
+-- | unsafeCodePointAt'  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120793
+-- | unsafeCodePointAt'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 57304   -- Surrogate code point
+-- | unsafeCodePointAt'  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120794
+-- | unsafeCodePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 57313   -- Surrogate code point
+-- | ```
+foreign import unsafeCodePointAt :: Int -> String -> Int
+
+-- | Return the Unicode code point value of the character at the given index,
+-- | if the index is within bounds.
+-- | This function is a simple (unsafe) wrapper around JavaScript's
+-- | `String.prototype.codePointAt` method. This means that if the index does
+-- | not point to the beginning of a valid surrogate pair, the code unit at
+-- | the index (i.e. the Unicode code point of the surrogate pair half) is
+-- | returned instead.
+-- | If you want to treat a string as an array of Unicode Code Points, use
+-- | `unsafeCodePointAt` instead.
+-- |
+-- | Example:
+-- | ```purescript
+-- | unsafeCodePointAt'  0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120793
+-- | unsafeCodePointAt'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 57304   -- Surrogate code point
+-- | unsafeCodePointAt'  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120794
+-- | unsafeCodePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 57313   -- Surrogate code point
+-- |
+-- | unsafeCodePointAt   0 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120792
+-- | unsafeCodePointAt   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120793
+-- | unsafeCodePointAt   2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120794
+-- | unsafeCodePointAt  19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" -- Error
+-- | ```
+unsafeCodePointAt' :: Int -> String -> Int
+unsafeCodePointAt' = unsafeCodePointAtP
+
+foreign import unsafeCodePointAtP :: Int -> String -> Int
 
 -- | Return a string that contains the specified number of copies of the input
 -- | string concatenated together.

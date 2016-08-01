@@ -11,7 +11,7 @@ function _codePointAt (just) {
       };
     };
   };
-};
+}
 
 function _codePointAtP (just) {
   return function (nothing) {
@@ -21,13 +21,13 @@ function _codePointAtP (just) {
       };
     };
   };
-};
+}
 
 function endsWith (searchString) {
   return function (s) {
     return s.endsWith(searchString);
   };
-};
+}
 
 function endsWithP (searchString) {
   return function (position) {
@@ -35,31 +35,31 @@ function endsWithP (searchString) {
       return s.endsWith(searchString, position);
     };
   };
-};
+}
 
 function escapeRegex (str) {
   return str.replace(/[.*+?^${}()|[\]\-\\]/g, "\\$&");
-};
+}
 
 function includes (searchString) {
   return function (str) {
     return str.includes(searchString);
   };
-};
+}
 
 function length (str) {
   return Array.from(str).length;
-};
+}
 
 function normalize (str) {
   return str.normalize();
-};
+}
 
 function _normalizeP (normalizationForm) {
   return function (str) {
     return str.normalize(normalizationForm);
   };
-};
+}
 
 function _repeat (just) {
   return function (nothing) {
@@ -78,13 +78,13 @@ function _repeat (just) {
       };
     };
   };
-};
+}
 
 function startsWith (searchString) {
   return function (s) {
     return s.startsWith(searchString);
   };
-};
+}
 
 function startsWithP (searchString) {
   return function (position) {
@@ -92,17 +92,42 @@ function startsWithP (searchString) {
       return s.startsWith(searchString, position);
     };
   };
-};
+}
 
 function stripChars (chars) {
   return function (s) {
     return s.replace(RegExp("[" + escapeRegex(chars) + "]", "g"), "");
   };
-};
+}
 
 function toCharArray (str) {
   return Array.from(str);
-};
+}
+
+function unsafeCodePointAt (i) {
+  return function (s) {
+    var codePointArray = Array.from(s);
+    var isWithinRange = i >= 0 && i < codePointArray.length;
+
+    if (isWithinRange) {
+      return codePointArray[i].codePointAt(0);
+    }
+    else {
+      throw new Error("Data.String.Utils.unsafeCodePointAt: Invalid index");
+    }
+  };
+}
+
+function unsafeCodePointAtP (i) {
+  return function (s) {
+    if (i >= 0 && i < s.length) {
+      return s.codePointAt(i);
+    }
+    else {
+      throw new Error("Data.String.Utils.unsafeCodePointAt': Invalid index");
+    }
+  };
+}
 
 function unsafeRepeat (n) {
   return function (str) {
@@ -113,20 +138,22 @@ function unsafeRepeat (n) {
       throw new Error("Data.String.Utils.unsafeRepeat: Invalid count");
     }
   };
-};
+}
 
-exports._codePointAt  = _codePointAt;
-exports._codePointAtP = _codePointAtP;
-exports.endsWith      = endsWith;
-exports.endsWithP     = endsWithP;
-exports.escapeRegex   = escapeRegex;
-exports.includes      = includes;
-exports.length        = length;
-exports.normalize     = normalize;
-exports._normalizeP   = _normalizeP;
-exports._repeat       = _repeat;
-exports.startsWith    = startsWith;
-exports.startsWithP   = startsWithP;
-exports.stripChars    = stripChars;
-exports.toCharArray   = toCharArray;
-exports.unsafeRepeat  = unsafeRepeat;
+exports._codePointAt       = _codePointAt;
+exports._codePointAtP      = _codePointAtP;
+exports.endsWith           = endsWith;
+exports.endsWithP          = endsWithP;
+exports.escapeRegex        = escapeRegex;
+exports.includes           = includes;
+exports.length             = length;
+exports.normalize          = normalize;
+exports._normalizeP        = _normalizeP;
+exports._repeat            = _repeat;
+exports.startsWith         = startsWith;
+exports.startsWithP        = startsWithP;
+exports.stripChars         = stripChars;
+exports.toCharArray        = toCharArray;
+exports.unsafeCodePointAt  = unsafeCodePointAt;
+exports.unsafeCodePointAtP = unsafeCodePointAtP;
+exports.unsafeRepeat       = unsafeRepeat;
