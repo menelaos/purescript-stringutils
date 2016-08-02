@@ -1,5 +1,6 @@
 module Test.Input
   ( NegativeInt(..)
+  , NewlineChar(..)
   , NonNegativeInt(..)
   , WhiteSpaceChar(..)
   )
@@ -12,17 +13,25 @@ import Test.StrongCheck.Gen       (chooseInt, elements)
 
 
 newtype NegativeInt = NegativeInt Int
+newtype NewlineChar = NewlineChar Char
 newtype NonNegativeInt = NonNegativeInt Int
 newtype WhiteSpaceChar = WhiteSpaceChar Char
 
 instance arbNegativeInt :: Arbitrary NegativeInt where
   arbitrary = NegativeInt <$> chooseInt (-2147483648.0) (-1.0)
 
+instance arbNewlineChar :: Arbitrary NewlineChar where
+  arbitrary = NewlineChar <$> elements '\n' newlineChars
+
 instance arbNonNegativeInt :: Arbitrary NonNegativeInt where
   arbitrary = NonNegativeInt <$> chooseInt (0.0) (2147483647.0)
 
 instance arbWhiteSpaceChar :: Arbitrary WhiteSpaceChar where
   arbitrary = WhiteSpaceChar <$> elements ' ' whiteSpaceChars
+
+newlineChars :: List Char
+newlineChars = fromFoldable
+  [ '\n', '\v', '\f', '\r', '\x0085', '\x2028', '\x2029' ]
 
 whiteSpaceChars :: List Char
 whiteSpaceChars = fromFoldable

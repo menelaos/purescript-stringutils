@@ -7,7 +7,7 @@ import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
-                                 , escapeRegex, filter, includes, length
+                                 , escapeRegex, filter, includes, length, lines
                                  , mapChars, normalize, normalize', repeat
                                  , replaceAll, startsWith, startsWith'
                                  , stripChars, toCharArray, unsafeCodePointAt
@@ -15,6 +15,7 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  )
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
+                                 , NewlineChar(NewlineChar)
                                  , NonNegativeInt(NonNegativeInt)
                                  , WhiteSpaceChar(WhiteSpaceChar)
                                  )
@@ -168,6 +169,19 @@ testStringUtils = do
   assert $ length "" === 0
   assert $ length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === 10
   quickCheck lengthNonNegativeProp
+
+  log "lines"
+  let
+    linesNewlineProp :: NewlineChar -> Result
+    linesNewlineProp (NewlineChar c) =
+      lines ("Action" <> c' <> "is" <> c' <> "eloquence.")
+        === ["Action", "is", "eloquence."]
+      where
+        c' = Data.String.singleton c
+
+  -- The CRLF case has to be tested separately due to it using two chars
+  assert $ lines "Action\r\nis\r\neloquence." === ["Action", "is", "eloquence."]
+  quickCheck linesNewlineProp
 
   log "mapChars"
   -- Mapping over individual characters (Unicode code points) in e.g.

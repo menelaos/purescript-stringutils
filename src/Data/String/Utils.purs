@@ -9,6 +9,7 @@ module Data.String.Utils
   , filter
   , includes
   , length
+  , lines
   , mapChars
   , normalize
   , normalize'
@@ -142,6 +143,15 @@ foreign import includes :: String -> String -> Boolean
 -- | length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == 10    -- 14 with `Data.String.length`
 -- | ```
 foreign import length :: String -> Int
+
+-- | Split a string into an array of strings which were delimited by newline
+-- | characters.
+-- |
+-- | Example:
+-- | ```purescript
+-- | lines "Action\nis\neloquence." == ["Action", "is", "eloquence."]
+-- | ```
+foreign import lines :: String -> Array String
 
 -- | Return the string obtained by applying the mapping function to each
 -- | character (i.e. Unicode code point) of the input string.

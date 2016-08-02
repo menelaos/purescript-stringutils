@@ -51,6 +51,11 @@ function length (str) {
   return Array.from(str).length;
 }
 
+function lines (str) {
+  // See http://www.unicode.org/reports/tr18/#RL1.6
+  return str.split(/\r\n|[\n\v\f\r\u0085\u2028\u2029]/);
+}
+
 function normalize (str) {
   return str.normalize();
 }
@@ -151,6 +156,7 @@ exports.endsWithP          = endsWithP;
 exports.escapeRegex        = escapeRegex;
 exports.includes           = includes;
 exports.length             = length;
+exports.lines              = lines;
 exports.normalize          = normalize;
 exports._normalizeP        = _normalizeP;
 exports._repeat            = _repeat;
