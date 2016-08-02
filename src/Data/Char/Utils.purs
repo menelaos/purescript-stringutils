@@ -2,6 +2,7 @@ module Data.Char.Utils
   ( fromCodePoint
   , isSurrogate
   , toCodePoint
+  , unsafeFromCodePoint
   )
 where
 
@@ -33,3 +34,8 @@ isSurrogate c = toCodePoint c .&. 0x1FF800 == 0xD800
 -- | toCodePoint '∀' == 8704
 -- | ```
 foreign import toCodePoint :: Char -> Int
+
+-- | Return the character corresponding to the given Unicode code point.
+-- | **Unsafe:** Throws runtime exception if the given number is outside the
+-- | range 0 .. 0x10FFFF.
+foreign import unsafeFromCodePoint :: Int -> Char

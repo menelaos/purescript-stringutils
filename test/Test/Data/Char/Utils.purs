@@ -3,7 +3,9 @@ module Test.Data.Char.Utils
 where
 
 import Control.Monad.Eff.Console  (log)
-import Data.Char.Utils            (fromCodePoint, isSurrogate, toCodePoint)
+import Data.Char.Utils            ( fromCodePoint, isSurrogate, toCodePoint
+                                  , unsafeFromCodePoint
+                                  )
 import Data.Int                   (toNumber)
 import Data.Maybe                 (Maybe(Just, Nothing), fromJust, isJust)
 import Partial.Unsafe             (unsafePartial)
@@ -43,6 +45,18 @@ testCharUtils = do
     codePointIdentityProp = (===) <$> fromCodePoint <<< toCodePoint <*> Just
 
   quickCheck codePointIdentityProp
+
+  log "unsafeFromCodePoint"
+  assert $ unsafeFromCodePoint   97 === 'a'
+  assert $ unsafeFromCodePoint 8704 === '∀'
+
+  log "unsafeFromCodePoint & fromCodePoint"
+  let
+    fromCodePointIdentityProp :: CodePoint -> Result
+    fromCodePointIdentityProp (CodePoint n) =
+      (===) <$> fromCodePoint <*> Just <<< unsafeFromCodePoint $ n
+
+  quickCheck fromCodePointIdentityProp
 
 -- We use newtypes in order to generate arbitrary code points with StrongCheck
 newtype CodePoint = CodePoint Int
