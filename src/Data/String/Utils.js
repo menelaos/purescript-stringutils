@@ -140,6 +140,10 @@ function unsafeRepeat (n) {
   };
 }
 
+function words (s) {
+  return s.split(/\s+/);
+}
+
 exports._codePointAt       = _codePointAt;
 exports._codePointAtP      = _codePointAtP;
 exports.endsWith           = endsWith;
@@ -157,3 +161,4 @@ exports.toCharArray        = toCharArray;
 exports.unsafeCodePointAt  = unsafeCodePointAt;
 exports.unsafeCodePointAtP = unsafeCodePointAtP;
 exports.unsafeRepeat       = unsafeRepeat;
+exports.words              = words;

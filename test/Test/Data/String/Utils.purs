@@ -11,11 +11,12 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , mapChars, normalize, normalize', repeat
                                  , replaceAll, startsWith, startsWith'
                                  , stripChars, toCharArray, unsafeCodePointAt
-                                 , unsafeCodePointAt', unsafeRepeat
+                                 , unsafeCodePointAt', unsafeRepeat, words
                                  )
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
                                  , NonNegativeInt(NonNegativeInt)
+                                 , WhiteSpaceChar(WhiteSpaceChar)
                                  )
 import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
 
@@ -317,3 +318,14 @@ testStringUtils = do
   quickCheck unsafeRepeatZeroProp
   quickCheck unsafeRepeatOnceProp
   quickCheck unsafeRepeatEmptyStringProp
+
+  log "words"
+  let
+    wordsWhiteSpaceProp :: WhiteSpaceChar -> Result
+    wordsWhiteSpaceProp (WhiteSpaceChar c) =
+      words ("Action" <> c' <> "is" <> c' <> "eloquence.")
+        === ["Action", "is", "eloquence."]
+      where
+        c' = Data.String.singleton c
+
+  quickCheck wordsWhiteSpaceProp

@@ -21,6 +21,7 @@ module Data.String.Utils
   , unsafeCodePointAt
   , unsafeCodePointAt'
   , unsafeRepeat
+  , words
   )
 where
 
@@ -302,3 +303,12 @@ foreign import unsafeCodePointAtP :: Int -> String -> Int
 -- | **Unsafe:** Throws runtime exception if the repeat count is negative or if
 -- | the resulting string would overflow the maximum string size.
 foreign import unsafeRepeat :: Int -> String -> String
+
+-- | Split a string into an array of strings which were delimited by white space
+-- | characters.
+-- |
+-- | Example:
+-- | ```purescript
+-- | words "Action is eloquence." == ["Action", "is", "eloquence."]
+-- | ```
+foreign import words :: String -> Array String
