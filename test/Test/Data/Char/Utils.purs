@@ -6,10 +6,12 @@ import Control.Monad.Eff.Console  (log)
 import Data.Char.Utils            ( fromCodePoint, isSurrogate, toCodePoint
                                   , unsafeFromCodePoint
                                   )
-import Data.Int                   (toNumber)
 import Data.Maybe                 (Maybe(Just, Nothing), fromJust, isJust)
 import Partial.Unsafe             (unsafePartial)
 import Prelude
+import Test.Input                 ( CodePoint(CodePoint)
+                                  , SurrogateCodePoint(SurrogateCodePoint)
+                                  )
 import Test.StrongCheck           (Result, SC, (===), assert, quickCheck)
 import Test.StrongCheck.Arbitrary (class Arbitrary, arbitrary)
 import Test.StrongCheck.Gen       (chooseInt)
@@ -57,15 +59,3 @@ testCharUtils = do
       (===) <$> fromCodePoint <*> Just <<< unsafeFromCodePoint $ n
 
   quickCheck fromCodePointIdentityProp
-
--- We use newtypes in order to generate arbitrary code points with StrongCheck
-newtype CodePoint = CodePoint Int
-newtype SurrogateCodePoint = SurrogateCodePoint Int
-
--- Unicode code points are in the range 0 .. U+10FFFF
-instance arbCodePoint :: Arbitrary CodePoint where
-  arbitrary = CodePoint <$> chooseInt 0.0 (toNumber 0x10FFFF)
-
--- Surrogate code points are in the range U+D800 .. U+DFFF
-instance arbSurrogateCodePoint :: Arbitrary SurrogateCodePoint where
-  arbitrary = SurrogateCodePoint <$> chooseInt (toNumber 0xD800) (toNumber 0xDFFF)
