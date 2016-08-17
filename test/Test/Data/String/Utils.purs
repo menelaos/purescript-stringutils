@@ -257,7 +257,8 @@ testStringUtils = do
     startsWithEmptyStringProp :: String -> Result
     startsWithEmptyStringProp str = startsWith "" str === true
 
-  assert $ startsWith "Pure" "PureScript" === true
+  assert $ startsWith "Pure"   "PureScript" === true
+  assert $ startsWith "Script" "PureScript" === false
   quickCheck startsWithSubsetProp
   quickCheck startsWithEmptyStringProp
 
@@ -269,6 +270,7 @@ testStringUtils = do
     startsWith'EmptyStringProp str n = startsWith' "" n str === true
 
   assert $ startsWith' "Script" 4 "PureScript" === true
+  assert $ startsWith' "Pure"   4 "PureScript" === false
   quickCheck startsWith'EmptyStringProp
 
   log "startsWith & startsWith'"
@@ -295,8 +297,15 @@ testStringUtils = do
   quickCheck stripCharsEmptyStringProp
 
   log "toCharArray"
+  let
+    toCharArrayFromCharArrayIdProp :: String -> Result
+    toCharArrayFromCharArrayIdProp =
+      (===) <$> Data.String.fromCharArray <<< toCharArray <*> id
+
   assert $ toCharArray "" === []
   assert $ toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === ['ℙ', '∪', '𝕣', 'ⅇ', 'Ⴝ', '𝚌', '𝕣', 'ⅈ', '𝚙', '†']
+
+  quickCheck toCharArrayFromCharArrayIdProp
 
   log "unsafeCodePointAt"
   assert $ unsafeCodePointAt  0 "a"          === 97
