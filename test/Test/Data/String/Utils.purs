@@ -7,11 +7,12 @@ import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
-                                 , escapeRegex, filter, includes, length, lines
-                                 , mapChars, normalize, normalize', repeat
-                                 , replaceAll, startsWith, startsWith'
-                                 , stripChars, toCharArray, unsafeCodePointAt
-                                 , unsafeCodePointAt', unsafeRepeat, words
+                                 , escapeRegex, filter, includes, includes'
+                                 , length, lines, mapChars, normalize
+                                 , normalize', repeat, replaceAll, startsWith
+                                 , startsWith', stripChars, toCharArray
+                                 , unsafeCodePointAt, unsafeCodePointAt'
+                                 , unsafeRepeat, words
                                  )
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
@@ -160,6 +161,33 @@ testStringUtils = do
   assert $ includes "Duncan" "The Merchant of Venice" === false
   quickCheck includesSubsetProp
   quickCheck includesEmptyStringProp
+
+  log "includes'"
+  let
+    includes'SubsetProp :: String -> Result
+    includes'SubsetProp str = includes' str 0 str === true
+
+    includes'EmptyStringProp :: String -> Int -> Result
+    includes'EmptyStringProp str pos = includes' "" pos str === true
+
+    includes'NegativePositionProp :: String -> NegativeInt -> String -> Result
+    includes'NegativePositionProp needle (NegativeInt n) haystack =
+      includes' needle n haystack === includes' needle 0 haystack
+
+  assert $ includes' "𝟙𝟚𝟛" 1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === true
+  assert $ includes' "𝟙𝟚𝟛" 2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === false
+  assert $ includes' "𝟡"  10 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" === false
+  quickCheck includes'SubsetProp
+  quickCheck includes'EmptyStringProp
+  quickCheck includes'NegativePositionProp
+
+  log "includes s == includes' s 0"
+  let
+    includesZeroProp :: String -> String -> Result
+    includesZeroProp searchTerm =
+      (===) <$> includes searchTerm <*> includes' searchTerm 0
+
+  quickCheck includesZeroProp
 
   log "length"
   let

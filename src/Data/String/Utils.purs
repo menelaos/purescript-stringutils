@@ -8,6 +8,7 @@ module Data.String.Utils
   , escapeRegex
   , filter
   , includes
+  , includes'
   , length
   , lines
   , mapChars
@@ -130,7 +131,32 @@ filter :: (Char -> Boolean) -> String -> String
 filter p = fromCharArray <<< Array.filter p <<< toCharArray
 
 -- | Determine whether the second arguments contains the first one.
+-- |
+-- | Example:
+-- | ```purescript
+-- | includes "Merchant" "The Merchant of Venice" === true
+-- | includes "Duncan"   "The Merchant of Venice" === false
+-- | ```
 foreign import includes :: String -> String -> Boolean
+
+-- | Determine whether the second string argument contains the first one,
+-- | beginning the search at the given position.
+-- | Note that this function handles Unicode as you would expect.
+-- | Negative `position` values result in a search from the beginning of the
+-- | string.
+-- |
+-- | Example:
+-- | ```purescript
+-- | includes' "𝟙"  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == true
+-- | includes' "𝟙"  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == false
+-- | includes' "𝟡" 10 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == false
+-- | -- This behaviour is different from `String.prototype.includes`:
+-- | -- "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡".includes("𝟡", 10) == true
+-- | ```
+includes' :: String -> Int -> String -> Boolean
+includes' = includesP
+
+foreign import includesP :: String -> Int -> String -> Boolean
 
 -- | Return the number of Unicode code points in a string.
 -- | Note that this function correctly accounts for Unicode symbols that
