@@ -13,8 +13,6 @@ import Test.Input                 ( CodePoint(CodePoint)
                                   , SurrogateCodePoint(SurrogateCodePoint)
                                   )
 import Test.StrongCheck           (Result, SC, (===), assert, quickCheck)
-import Test.StrongCheck.Arbitrary (class Arbitrary, arbitrary)
-import Test.StrongCheck.Gen       (chooseInt)
 
 testCharUtils :: SC () Unit
 testCharUtils = do

@@ -8,10 +8,9 @@ module Test.Input
   )
 where
 
-import Data.Int                   (toNumber)
 import Data.List                  (List, fromFoldable)
 import Prelude
-import Test.StrongCheck.Arbitrary (class Arbitrary, arbitrary)
+import Test.StrongCheck.Arbitrary (class Arbitrary)
 import Test.StrongCheck.Gen       (chooseInt, elements)
 
 
@@ -24,20 +23,20 @@ newtype WhiteSpaceChar     = WhiteSpaceChar Char
 
 -- Unicode code points are in the range 0 .. U+10FFFF
 instance arbCodePoint :: Arbitrary CodePoint where
-  arbitrary = CodePoint <$> chooseInt 0.0 (toNumber 0x10FFFF)
+  arbitrary = CodePoint <$> chooseInt 0 0x10FFFF
 
 instance arbNegativeInt :: Arbitrary NegativeInt where
-  arbitrary = NegativeInt <$> chooseInt (-2147483648.0) (-1.0)
+  arbitrary = NegativeInt <$> chooseInt (-2147483648) (-1)
 
 instance arbNewlineChar :: Arbitrary NewlineChar where
   arbitrary = NewlineChar <$> elements '\n' newlineChars
 
 instance arbNonNegativeInt :: Arbitrary NonNegativeInt where
-  arbitrary = NonNegativeInt <$> chooseInt (0.0) (2147483647.0)
+  arbitrary = NonNegativeInt <$> chooseInt 0 2147483647
 
 -- Surrogate code points are in the range U+D800 .. U+DFFF
 instance arbSurrogateCodePoint :: Arbitrary SurrogateCodePoint where
-  arbitrary = SurrogateCodePoint <$> chooseInt (toNumber 0xD800) (toNumber 0xDFFF)
+  arbitrary = SurrogateCodePoint <$> chooseInt 0xD800 0xDFFF
 
 instance arbWhiteSpaceChar :: Arbitrary WhiteSpaceChar where
   arbitrary = WhiteSpaceChar <$> elements ' ' whiteSpaceChars

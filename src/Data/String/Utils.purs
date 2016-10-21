@@ -27,11 +27,12 @@ module Data.String.Utils
   )
 where
 
-import Data.Either       (fromRight)
-import Data.Maybe        (Maybe(Just, Nothing))
-import Data.String       (fromCharArray)
-import Data.String.Regex (Regex, RegexFlags, noFlags, replace, regex)
-import Partial.Unsafe    (unsafePartial)
+import Data.Either             (fromRight)
+import Data.Maybe              (Maybe(Just, Nothing))
+import Data.String             (fromCharArray)
+import Data.String.Regex       (Regex, replace, regex)
+import Data.String.Regex.Flags (global)
+import Partial.Unsafe          (unsafePartial)
 import Prelude
 
 import Data.Array as Array
@@ -235,15 +236,10 @@ foreign import _repeat
 -- | Replace all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String
 replaceAll old new str = replace (mkRegex old) new str
--- replaceAll old = replace (mkRegex old)
   where
     -- Helper function to construct a `Regex` from an input string
     mkRegex :: String -> Regex
-    mkRegex str = unsafePartial (fromRight (regex (escapeRegex str) flags))
-
-    -- Make sure that ALL occurrences and not only the first one get replaced
-    flags :: RegexFlags
-    flags = noFlags { global = true }
+    mkRegex str = unsafePartial (fromRight (regex (escapeRegex str) global))
 
 -- | Determine whether the second argument starts with the first one.
 foreign import startsWith :: String -> String -> Boolean
