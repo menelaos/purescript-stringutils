@@ -7,6 +7,7 @@ module Data.String.Utils
   , endsWith'
   , escapeRegex
   , filter
+  , fromCharArray
   , includes
   , includes'
   , length
@@ -29,7 +30,6 @@ where
 
 import Data.Either             (fromRight)
 import Data.Maybe              (Maybe(Just, Nothing))
-import Data.String             (fromCharArray)
 import Data.String.Regex       (Regex, replace, regex)
 import Data.String.Regex.Flags (global)
 import Partial.Unsafe          (unsafePartial)
@@ -42,15 +42,18 @@ import Data.Array as Array
 -- | If you want a simple wrapper around JavaScript's `String.prototype.charAt`
 -- | method, you should use the `Data.String.charAt` function from
 -- | `purescript-strings.`
+-- | This function returns a `String` instead of a `Char` because PureScript
+-- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
+-- | code points.
 -- |
 -- | Example:
 -- | ```purescript
 -- | -- Data.String.Utils.charAt
--- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '𝕣'
+-- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just "𝕣"
 -- | -- Data.String.charAt
 -- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '�'
 -- | ```
-charAt :: Int -> String -> Maybe Char
+charAt :: Int -> String -> Maybe String
 charAt n str = Array.index (toCharArray str) n
 
 -- | Return the Unicode code point value of the character at the given index,
@@ -128,8 +131,23 @@ foreign import endsWithP :: String -> Int -> String -> Boolean
 foreign import escapeRegex :: String -> String
 
 -- | Keep only those characters that satisfy the predicate.
-filter :: (Char -> Boolean) -> String -> String
+-- | This function uses `String` instead of `Char` because PureScript
+-- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
+-- | code points.
+filter :: (String -> Boolean) -> String -> String
 filter p = fromCharArray <<< Array.filter p <<< toCharArray
+
+-- | Convert an array of characters into a `String`.
+-- | This function uses `String` instead of `Char` because PureScript
+-- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
+-- | code points.
+-- |
+-- | Example:
+-- | ```purescript
+-- | fromCharArray ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
+-- |   == "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
+-- | ```
+foreign import fromCharArray :: Array String -> String
 
 -- | Determine whether the second arguments contains the first one.
 -- |
@@ -185,13 +203,16 @@ foreign import lines :: String -> Array String
 -- | Note that this is probably not what you want as Unicode code points are
 -- | not necessarily the same as user-perceived characters (grapheme clusters).
 -- | Only use this function if you know what you are doing.
+-- | This function uses `String`s instead of `Char`s because PureScript
+-- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
+-- | code points.
 -- |
 -- | Example:
 -- | ```purescript
 -- | -- Mapping over what appears to be six characters...
--- | mapChars (const 'x') "Åström" == "xxxxxxxx" -- See? Don't use this!
+-- | mapChars (const "x") "Åström" == "xxxxxxxx" -- See? Don't use this!
 -- | ```
-mapChars :: (Char -> Char) -> String -> String
+mapChars :: (String -> String) -> String -> String
 mapChars f = fromCharArray <<< map f <<< toCharArray
 
 -- | Return the `Normalization Form C` of a given string.
@@ -267,18 +288,21 @@ foreign import stripChars :: String -> String -> String
 -- | The difference becomes apparent when converting strings
 -- | that contain characters which are internally represented
 -- | as surrogate pairs.
+-- | This function uses `String`s instead of `Char`s because PureScript
+-- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
+-- | code points.
 -- |
 -- | Example:
 -- | ```purescript
 -- | -- Data.String.Utils
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
--- |   == ['ℙ', '∪', '𝕣', 'ⅇ', 'Ⴝ', '𝚌', '𝕣', 'ⅈ', '𝚙', '†']
+-- |   == ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
 -- |
 -- | -- Data.String
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" ==
 -- |   ['ℙ', '∪', '�', '�', 'ⅇ', 'Ⴝ', '�', '�', '�', '�', 'ⅈ', '�', '�', '†']
 -- | ```
-foreign import toCharArray :: String -> Array Char
+foreign import toCharArray :: String -> Array String
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.

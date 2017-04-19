@@ -7,8 +7,8 @@ import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
-                                 , escapeRegex, filter, includes, includes'
-                                 , length, lines, mapChars, normalize
+                                 , escapeRegex, filter, fromCharArray, includes
+                                 , includes', length, lines, mapChars, normalize
                                  , normalize', repeat, replaceAll, startsWith
                                  , startsWith', stripChars, toCharArray
                                  , unsafeCodePointAt, unsafeCodePointAt'
@@ -29,7 +29,7 @@ testStringUtils = do
     charAtEmptyStringProp :: Int -> Result
     charAtEmptyStringProp n = charAt n "" === Nothing
 
-  assert $ charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === Just '𝕣'
+  assert $ charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === Just "𝕣"
   quickCheck charAtEmptyStringProp
 
   log "codePointAt"
@@ -117,27 +117,27 @@ testStringUtils = do
     filterNukeProp :: String -> Result
     filterNukeProp str = filter (const false) str === ""
 
-    filterIdempotenceProp :: (Char -> Boolean) -> String -> Result
+    filterIdempotenceProp :: (String -> Boolean) -> String -> Result
     filterIdempotenceProp f str = filter f (filter f str) === filter f str
 
-    filterDistributiveProp :: (Char -> Boolean) -> String -> String -> Result
+    filterDistributiveProp :: (String -> Boolean) -> String -> String -> Result
     filterDistributiveProp f a b =
       filter f (a <> b) === filter f a <> filter f b
 
-    filterEmptyStringProp :: (Char -> Boolean) -> Result
+    filterEmptyStringProp :: (String -> Boolean) -> Result
     filterEmptyStringProp f = filter f "" === ""
 
-    allButPureScript :: Char -> Boolean
-    allButPureScript 'ℙ' = true
-    allButPureScript '∪' = true
-    allButPureScript '𝕣' = true
-    allButPureScript 'ⅇ' = true
-    allButPureScript 'Ⴝ' = true
-    allButPureScript '𝚌' = true
-    allButPureScript '𝕣' = true
-    allButPureScript 'ⅈ' = true
-    allButPureScript '𝚙' = true
-    allButPureScript '†' = true
+    allButPureScript :: String -> Boolean
+    allButPureScript "ℙ" = true
+    allButPureScript "∪" = true
+    allButPureScript "𝕣" = true
+    allButPureScript "ⅇ" = true
+    allButPureScript "Ⴝ" = true
+    allButPureScript "𝚌" = true
+    allButPureScript "𝕣" = true
+    allButPureScript "ⅈ" = true
+    allButPureScript "𝚙" = true
+    allButPureScript "†" = true
     allButPureScript _ = false
 
   -- This assertion is to make sure that `filter` operates on code points
@@ -148,6 +148,15 @@ testStringUtils = do
   quickCheck filterDistributiveProp
   quickCheck filterEmptyStringProp
   quickCheck filterNukeProp
+
+  log "fromCharArray"
+  let
+    fromCharArrayIdProp :: String -> Result
+    fromCharArrayIdProp = (===) <$> fromCharArray <<< toCharArray <*> id
+  assert $
+    fromCharArray ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
+      === "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
+  quickCheck fromCharArrayIdProp
 
   log "includes"
   let
@@ -214,7 +223,7 @@ testStringUtils = do
   log "mapChars"
   -- Mapping over individual characters (Unicode code points) in e.g.
   -- unnormalized strings results in unexpected (yet correct) behaviour.
-  assert $ mapChars (const 'x') "Åström" === "xxxxxxxx"
+  assert $ mapChars (const "x") "Åström" === "xxxxxxxx"
 
   log "normalize"
   -- Due to incomplete fonts, the strings in the following assertions may
@@ -328,10 +337,12 @@ testStringUtils = do
   let
     toCharArrayFromCharArrayIdProp :: String -> Result
     toCharArrayFromCharArrayIdProp =
-      (===) <$> Data.String.fromCharArray <<< toCharArray <*> id
+      (===) <$> fromCharArray <<< toCharArray <*> id
 
   assert $ toCharArray "" === []
-  assert $ toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" === ['ℙ', '∪', '𝕣', 'ⅇ', 'Ⴝ', '𝚌', '𝕣', 'ⅈ', '𝚙', '†']
+  assert $
+    toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
+      === ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
 
   quickCheck toCharArrayFromCharArrayIdProp
 

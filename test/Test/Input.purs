@@ -5,13 +5,15 @@ module Test.Input
   , NonNegativeInt(..)
   , SurrogateCodePoint(..)
   , WhiteSpaceChar(..)
+  , OneCharString(..)
   )
 where
 
 import Data.List                  (List, fromFoldable)
 import Prelude
-import Test.StrongCheck.Arbitrary (class Arbitrary)
+import Test.StrongCheck.Arbitrary (class Arbitrary, arbitrary)
 import Test.StrongCheck.Gen       (chooseInt, elements)
+import Unsafe.Coerce              (unsafeCoerce)
 
 
 newtype CodePoint          = CodePoint Int
@@ -20,6 +22,7 @@ newtype NewlineChar        = NewlineChar Char
 newtype NonNegativeInt     = NonNegativeInt Int
 newtype SurrogateCodePoint = SurrogateCodePoint Int
 newtype WhiteSpaceChar     = WhiteSpaceChar Char
+newtype OneCharString      = OneCharString String
 
 -- Unicode code points are in the range 0 .. U+10FFFF
 instance arbCodePoint :: Arbitrary CodePoint where
@@ -40,6 +43,9 @@ instance arbSurrogateCodePoint :: Arbitrary SurrogateCodePoint where
 
 instance arbWhiteSpaceChar :: Arbitrary WhiteSpaceChar where
   arbitrary = WhiteSpaceChar <$> elements ' ' whiteSpaceChars
+
+instance arbOneCharString :: Arbitrary OneCharString where
+  arbitrary = OneCharString <<< (unsafeCoerce :: Char -> String) <$> arbitrary
 
 newlineChars :: List Char
 newlineChars = fromFoldable

@@ -10,6 +10,7 @@ import Data.Maybe                 (Maybe(Just, Nothing), fromJust, isJust)
 import Partial.Unsafe             (unsafePartial)
 import Prelude
 import Test.Input                 ( CodePoint(CodePoint)
+                                  , OneCharString(OneCharString)
                                   , SurrogateCodePoint(SurrogateCodePoint)
                                   )
 import Test.StrongCheck           (Result, SC, (===), assert, quickCheck)
@@ -21,8 +22,8 @@ testCharUtils = do
     fromCodePointRangeProp :: CodePoint -> Result
     fromCodePointRangeProp (CodePoint n) = isJust (fromCodePoint n) === true
 
-  assert $ fromCodePoint   97     === Just 'a'
-  assert $ fromCodePoint 8704     === Just '∀'
+  assert $ fromCodePoint   97     === Just "a"
+  assert $ fromCodePoint 8704     === Just "∀"
   assert $ fromCodePoint (-1)     === Nothing
   assert $ fromCodePoint 0x110000 === Nothing
   quickCheck fromCodePointRangeProp
@@ -36,19 +37,20 @@ testCharUtils = do
   quickCheck surrogateRangeProp
 
   log "toCodePoint"
-  assert $ toCodePoint 'a' === 97
-  assert $ toCodePoint '∀' === 8704
+  assert $ toCodePoint "a" === 97
+  assert $ toCodePoint "∀" === 8704
 
   log "fromCodePoint <<< toCodePoint == Just"
   let
-    codePointIdentityProp :: Char -> Result
-    codePointIdentityProp = (===) <$> fromCodePoint <<< toCodePoint <*> Just
+    codePointIdentityProp :: OneCharString -> Result
+    codePointIdentityProp (OneCharString s) =
+      (===) <$> fromCodePoint <<< toCodePoint <*> Just $ s
 
   quickCheck codePointIdentityProp
 
   log "unsafeFromCodePoint"
-  assert $ unsafeFromCodePoint   97 === 'a'
-  assert $ unsafeFromCodePoint 8704 === '∀'
+  assert $ unsafeFromCodePoint   97 === "a"
+  assert $ unsafeFromCodePoint 8704 === "∀"
 
   log "unsafeFromCodePoint & fromCodePoint"
   let

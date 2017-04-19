@@ -41,6 +41,10 @@ function escapeRegex (str) {
   return str.replace(/[.*+?^${}()|[\]\-\\]/g, "\\$&");
 }
 
+function fromCharArray (array) {
+  return array.join("");
+}
+
 function includes (searchString) {
   return function (str) {
     return str.includes(searchString);
@@ -185,6 +189,7 @@ exports._codePointAtP      = _codePointAtP;
 exports.endsWith           = endsWith;
 exports.endsWithP          = endsWithP;
 exports.escapeRegex        = escapeRegex;
+exports.fromCharArray      = fromCharArray;
 exports.includes           = includes;
 exports.includesP          = includesP;
 exports.length             = length;
