@@ -10,9 +10,9 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , escapeRegex, filter, fromCharArray, includes
                                  , includes', length, lines, mapChars, normalize
                                  , normalize', repeat, replaceAll, startsWith
-                                 , startsWith', stripChars, toCharArray
-                                 , unsafeCodePointAt, unsafeCodePointAt'
-                                 , unsafeRepeat, words
+                                 , startsWith', stripChars, stripDiacritics
+                                 , toCharArray, unsafeCodePointAt
+                                 , unsafeCodePointAt', unsafeRepeat, words
                                  )
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
@@ -332,6 +332,15 @@ testStringUtils = do
   assert $ stripChars "a-z"        "-abc--xyz-" === "bcxy"
   quickCheck stripCharsIdempotenceProp
   quickCheck stripCharsEmptyStringProp
+
+  log "stripDiacritics"
+  assert $ stripDiacritics "Ångström"        === "Angstrom"
+  assert $ stripDiacritics "Crème Brulée"    === "Creme Brulee"
+  assert $ stripDiacritics "Götterdämmerung" === "Gotterdammerung"
+  assert $ stripDiacritics "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"      === "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
+  assert $ stripDiacritics "Raison d'être"   === "Raison d'etre"
+  assert $ stripDiacritics "Týr"             === "Tyr"
+  assert $ stripDiacritics "Zürich"          === "Zurich"
 
   log "toCharArray"
   let

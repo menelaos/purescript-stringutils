@@ -20,6 +20,7 @@ module Data.String.Utils
   , startsWith
   , startsWith'
   , stripChars
+  , stripDiacritics
   , toCharArray
   , unsafeCodePointAt
   , unsafeCodePointAt'
@@ -275,11 +276,26 @@ foreign import startsWithP :: String -> Int -> String -> Boolean
 -- | Strip a set of characters from a string.
 -- | This function is case-sensitive.
 -- |
+-- | Example:
 -- | ```purescript
 -- | stripChars "aeiou" "PureScript" == "PrScrpt"
 -- | stripChars "AEIOU" "PureScript" == "PureScript"
 -- | ```
 foreign import stripChars :: String -> String -> String
+
+-- | Strip diacritics from a string.
+-- |
+-- | Example:
+-- | ```purescript
+-- | stripDiacritics "Ångström"        == "Angstrom"
+-- | stripDiacritics "Crème Brulée"    == "Creme Brulee"
+-- | stripDiacritics "Götterdämmerung" == "Gotterdammerung"
+-- | stripDiacritics "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"      == "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
+-- | stripDiacritics "Raison d'être"   == "Raison d'etre"
+-- | stripDiacritics "Týr"             == "Tyr"
+-- | stripDiacritics "Zürich"          == "Zurich"
+-- | ```
+foreign import stripDiacritics :: String -> String
 
 -- | Convert a string to an array of Unicode code points.
 -- | Note that this function is different from

@@ -140,6 +140,10 @@ function stripChars (chars) {
   };
 }
 
+function stripDiacritics (str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 function toCharArray (str) {
   return Array.from(str);
 }
@@ -200,6 +204,7 @@ exports._repeat            = _repeat;
 exports.startsWith         = startsWith;
 exports.startsWithP        = startsWithP;
 exports.stripChars         = stripChars;
+exports.stripDiacritics    = stripDiacritics;
 exports.toCharArray        = toCharArray;
 exports.unsafeCodePointAt  = unsafeCodePointAt;
 exports.unsafeCodePointAtP = unsafeCodePointAtP;
