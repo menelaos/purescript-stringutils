@@ -257,7 +257,7 @@ foreign import _repeat
 
 -- | Replace all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String
-replaceAll old new str = replace (mkRegex old) new str
+replaceAll = replace <<< mkRegex
   where
     -- Helper function to construct a `Regex` from an input string
     mkRegex :: String -> Regex
