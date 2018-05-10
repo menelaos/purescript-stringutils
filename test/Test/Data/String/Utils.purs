@@ -2,7 +2,8 @@ module Test.Data.String.Utils
   ( testStringUtils )
 where
 
-import Control.Monad.Eff.Console (log)
+import Effect                    (Effect)
+import Effect.Console            (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
@@ -20,9 +21,9 @@ import Test.Input                ( NegativeInt(NegativeInt)
                                  , NonNegativeInt(NonNegativeInt)
                                  , WhiteSpaceChar(WhiteSpaceChar)
                                  )
-import Test.StrongCheck          (Result, SC, (===), assert, quickCheck)
+import Test.StrongCheck          (Result, (===), assert, quickCheck)
 
-testStringUtils :: SC () Unit
+testStringUtils :: Effect Unit
 testStringUtils = do
   log "charAt"
   let
@@ -152,7 +153,7 @@ testStringUtils = do
   log "fromCharArray"
   let
     fromCharArrayIdProp :: String -> Result
-    fromCharArrayIdProp = (===) <$> fromCharArray <<< toCharArray <*> id
+    fromCharArrayIdProp = (===) <$> fromCharArray <<< toCharArray <*> identity
   assert $
     fromCharArray ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
       === "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
@@ -325,7 +326,7 @@ testStringUtils = do
       (===) <$> (stripChars chars <<< stripChars chars) <*> stripChars chars
 
     stripCharsEmptyStringProp :: String -> Result
-    stripCharsEmptyStringProp = (===) <$> id <*> stripChars ""
+    stripCharsEmptyStringProp = (===) <$> identity <*> stripChars ""
 
   assert $ stripChars "Script"     "JavaScript" === "Java" -- Seriously?
   assert $ stripChars "PURESCRIPT" "purescript" === "purescript"
@@ -346,7 +347,7 @@ testStringUtils = do
   let
     toCharArrayFromCharArrayIdProp :: String -> Result
     toCharArrayFromCharArrayIdProp =
-      (===) <$> fromCharArray <<< toCharArray <*> id
+      (===) <$> fromCharArray <<< toCharArray <*> identity
 
   assert $ toCharArray "" === []
   assert $
@@ -380,7 +381,7 @@ testStringUtils = do
     unsafeRepeatZeroProp str = unsafeRepeat 0 str === ""
 
     unsafeRepeatOnceProp :: String -> Result
-    unsafeRepeatOnceProp = (===) <$> unsafeRepeat 1 <*> id
+    unsafeRepeatOnceProp = (===) <$> unsafeRepeat 1 <*> identity
 
     unsafeRepeatEmptyStringProp :: NonNegativeInt -> Result
     unsafeRepeatEmptyStringProp (NonNegativeInt n) = unsafeRepeat n "" === ""
