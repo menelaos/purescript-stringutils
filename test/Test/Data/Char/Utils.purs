@@ -2,7 +2,8 @@ module Test.Data.Char.Utils
   ( testCharUtils )
 where
 
-import Control.Monad.Eff.Console  (log)
+import Effect                     (Effect)
+import Effect.Console             (log)
 import Data.Char.Utils            ( fromCodePoint, isSurrogate, toCodePoint
                                   , unsafeFromCodePoint
                                   )
@@ -13,9 +14,9 @@ import Test.Input                 ( CodePoint(CodePoint)
                                   , OneCharString(OneCharString)
                                   , SurrogateCodePoint(SurrogateCodePoint)
                                   )
-import Test.StrongCheck           (Result, SC, (===), assert, quickCheck)
+import Test.StrongCheck           (Result, (===), assert, quickCheck)
 
-testCharUtils :: SC () Unit
+testCharUtils :: Effect Unit
 testCharUtils = do
   log "fromCodePoint"
   let
