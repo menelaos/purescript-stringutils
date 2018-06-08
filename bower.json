@@ -22,18 +22,17 @@
     "tests"
   ],
   "dependencies": {
-    "purescript-strings": "^3.0.0",
-    "purescript-partial": "^1.1.2",
-    "purescript-arrays": "^4.0.0",
-    "purescript-either": "^3.0.0",
-    "purescript-maybe": "^3.0.0",
-    "purescript-prelude": "^3.0.0",
-    "purescript-integers": "^3.0.0"
+    "purescript-strings": "^4.0.0",
+    "purescript-partial": "^2.0.0",
+    "purescript-arrays": "^5.0.0",
+    "purescript-either": "^4.0.0",
+    "purescript-maybe": "^4.0.0",
+    "purescript-prelude": "^4.0.1",
+    "purescript-integers": "^4.0.0"
   },
   "devDependencies": {
-    "purescript-strongcheck": "^3.0.0",
-    "purescript-console": "^3.0.0",
-    "purescript-lists": "^4.0.0",
-    "purescript-unsafe-coerce": "^3.0.0"
+    "purescript-console": "^4.1.0",
+    "purescript-lists": "^5.0.0",
+    "purescript-unsafe-coerce": "^4.0.0"
   }
 }
