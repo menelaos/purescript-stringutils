@@ -2,10 +2,9 @@ module Test.Data.String.Utils
   ( testStringUtils )
 where
 
-import Effect                    (Effect)
-import Effect.Console            (log)
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
+import Data.String.CodeUnits     as Data.String.CodeUnits
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
                                  , escapeRegex, filter, fromCharArray, includes
@@ -15,6 +14,8 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , toCharArray, unsafeCodePointAt
                                  , unsafeCodePointAt', unsafeRepeat, words
                                  )
+import Effect                    (Effect)
+import Effect.Console            (log)
 import Prelude
 import Test.Input                ( NegativeInt(NegativeInt)
                                  , NewlineChar(NewlineChar)
@@ -215,7 +216,7 @@ testStringUtils = do
       lines ("Action" <> c' <> "is" <> c' <> "eloquence.")
         === ["Action", "is", "eloquence."]
       where
-        c' = Data.String.singleton c
+        c' = Data.String.CodeUnits.singleton c
 
   -- The CRLF case has to be tested separately due to it using two chars
   assert $ lines "Action\r\nis\r\neloquence." === ["Action", "is", "eloquence."]
@@ -398,6 +399,6 @@ testStringUtils = do
       words ("Action" <> c' <> "is" <> c' <> "eloquence.")
         === ["Action", "is", "eloquence."]
       where
-        c' = Data.String.singleton c
+        c' = Data.String.CodeUnits.singleton c
 
   quickCheck wordsWhiteSpaceProp

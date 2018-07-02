@@ -2,12 +2,12 @@ module Test.Data.Char.Utils
   ( testCharUtils )
 where
 
-import Effect                     (Effect)
-import Effect.Console             (log)
 import Data.Char.Utils            ( fromCodePoint, isSurrogate, toCodePoint
                                   , unsafeFromCodePoint
                                   )
 import Data.Maybe                 (Maybe(Just, Nothing), fromJust, isJust)
+import Effect                     (Effect)
+import Effect.Console             (log)
 import Partial.Unsafe             (unsafePartial)
 import Prelude
 import Test.Input                 ( CodePoint(CodePoint)
