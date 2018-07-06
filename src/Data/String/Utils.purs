@@ -38,10 +38,17 @@ import Prelude
 
 import Data.Array as Array
 
+
+-- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
+-- | function can now be reproduced via
+-- | `charAt n = map Data.String.singleton <<< Data.String.codePointAt n`.
+-- | In order to keep the string-related API surface area small, this function
+-- | will probably be removed at some point.
+-- |
 -- | Return the character at the given index, if the index is within bounds.
 -- | Note that this function handles Unicode as you would expect.
 -- | If you want a simple wrapper around JavaScript's `String.prototype.charAt`
--- | method, you should use the `Data.String.charAt` function from
+-- | method, you should use the `Data.String.CodeUnits.charAt` function from
 -- | `purescript-strings.`
 -- | This function returns a `String` instead of a `Char` because PureScript
 -- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
@@ -51,12 +58,14 @@ import Data.Array as Array
 -- | ```purescript
 -- | -- Data.String.Utils.charAt
 -- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just "𝕣"
--- | -- Data.String.charAt
+-- | -- Data.String.CodeUnits.charAt
 -- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '�'
 -- | ```
 charAt :: Int -> String -> Maybe String
 charAt n str = Array.index (toCharArray str) n
 
+-- | DEPRECATED: This function is now available in `purescript-strings`.
+-- |
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
 -- | Note that this function handles Unicode as you would expect.
@@ -93,7 +102,7 @@ foreign import _codePointAt
 -- | the index (i.e. the Unicode code point of the surrogate pair half) is
 -- | returned instead.
 -- | If you want to treat a string as an array of Unicode Code Points, use
--- | `codePointAt` instead.
+-- | `codePointAt` from `purescript-strings` instead.
 -- |
 -- | Example:
 -- | ```purescript
@@ -178,11 +187,13 @@ includes' = includesP
 
 foreign import includesP :: String -> Int -> String -> Boolean
 
+-- | DEPRECATED: This function is now available in `purescript-strings`.
+-- |
 -- | Return the number of Unicode code points in a string.
 -- | Note that this function correctly accounts for Unicode symbols that
 -- | are made up of surrogate pairs. If you want a simple wrapper around
 -- | JavaScript's `string.length` property, you should use the
--- | `Data.String.length` function from `purescript-strings`.
+-- | `Data.String.CodeUnits.length` function from `purescript-strings`.
 -- |
 -- | ```purescript
 -- | length "PureScript" == 10
@@ -255,6 +266,8 @@ foreign import _repeat
   -> String
   -> Maybe String
 
+-- | DEPRECATED: This function is now available in `purescript-strings`.
+-- |
 -- | Replace all occurences of the first argument with the second argument.
 replaceAll :: String -> String -> String -> String
 replaceAll = replace <<< mkRegex
@@ -297,9 +310,15 @@ foreign import stripChars :: String -> String -> String
 -- | ```
 foreign import stripDiacritics :: String -> String
 
+-- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
+-- | function can now be reproduced via
+-- | `map Data.String.singleton <<< Data.String.toCodePointArray`.
+-- | In order to keep the string-related API surface area small, this function
+-- | will probably be removed at some point.
+-- |
 -- | Convert a string to an array of Unicode code points.
 -- | Note that this function is different from
--- | `Data.String.toCharArray` in `purescript-strings` which
+-- | `Data.String.CodeUnits.toCharArray` in `purescript-strings` which
 -- | converts a string to an array of 16-bit code units.
 -- | The difference becomes apparent when converting strings
 -- | that contain characters which are internally represented
@@ -314,7 +333,7 @@ foreign import stripDiacritics :: String -> String
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
 -- |   == ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
 -- |
--- | -- Data.String
+-- | -- Data.String.CodeUnits
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" ==
 -- |   ['ℙ', '∪', '�', '�', 'ⅇ', 'Ⴝ', '�', '�', '�', '�', 'ⅈ', '�', '�', '†']
 -- | ```

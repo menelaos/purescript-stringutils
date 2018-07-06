@@ -11,6 +11,11 @@ import Data.Maybe    (Maybe(Just, Nothing))
 import Prelude
 
 
+-- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
+-- | function can now be reproduced via `map Data.String.singleton <<< toEnum`.
+-- | In order to keep the string-related API surface area small, this function
+-- | will probably be removed at some point.
+-- |
 -- | Return the character corresponding to the given Unicode code point and
 -- | `Nothing` if the given number is outside the range 0 .. 0x10FFFF.
 -- | This function uses `String` instead of `Char` because PureScript
