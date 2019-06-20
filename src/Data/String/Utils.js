@@ -185,7 +185,8 @@ function unsafeRepeat (n) {
 }
 
 function words (s) {
-  return s.split(/\s+/);
+  // Split at every Unicode whitespace character (25 as of Unicode 12.1)
+  return s.split(/[\u000a-\u000d\u0085\u2028\u2029\u0009\u0020\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000]+/);
 }
 
 exports._codePointAt       = _codePointAt;

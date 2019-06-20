@@ -47,13 +47,37 @@ instance arbWhiteSpaceChar :: Arbitrary WhiteSpaceChar where
 instance arbOneCharString :: Arbitrary OneCharString where
   arbitrary = OneCharString <<< (unsafeCoerce :: Char -> String) <$> arbitrary
 
+-- Unicode line terminators
 newlineChars :: List Char
 newlineChars = fromFoldable
-  [ '\n', '\r', '\x0085', '\x2028', '\x2029' ]
+  [ '\x000A' -- LINE FEED
+  , '\x000B' -- VERTICAL TAB
+  , '\x000C' -- FORM FEED
+  , '\x000D' -- CARRIAGE RETURN
+  , '\x0085' -- NEXT LINE
+  , '\x2028' -- LINE SEPARATOR
+  , '\x2029' -- PARAGRAPH SEPARATOR
+  ]
 
+-- Unicode whitespace characters (25 as of Unicode 12.1)
 whiteSpaceChars :: List Char
-whiteSpaceChars = fromFoldable
-  [ ' ', '\n', '\r', '\t', '\x00A0', '\x1680', '\x2000', '\x2001', '\x2002'
-  , '\x2003', '\x2004', '\x2005', '\x2006', '\x2007', '\x2008', '\x2009'
-  , '\x200A', '\x2028', '\x2029', '\x202F', '\x205F', '\x3000', '\xFEFF'
+whiteSpaceChars = newlineChars <> fromFoldable
+  [ '\x0009' -- CHARACTER TABULATION
+  , '\x0020' -- SPACE
+  , '\x00A0' -- NO-BREAK SPACE
+  , '\x1680' -- OGHAM SPACE MARK
+  , '\x2000' -- EN QUAD
+  , '\x2001' -- EM QUAD
+  , '\x2002' -- EN SPACE
+  , '\x2003' -- EM SPACE
+  , '\x2004' -- THREE-PER-EM SPACE
+  , '\x2005' -- FOUR-PER-EM SPACE
+  , '\x2006' -- SIX-PER-EM SPACE
+  , '\x2007' -- FIGURE SPACE
+  , '\x2008' -- PUNCTUATION SPACE
+  , '\x2009' -- THIN SPACE
+  , '\x200A' -- HAIR SPACE
+  , '\x202F' -- NARROW NO-BREAK SPACE
+  , '\x205F' -- MEDIUM MATHEMATICAL SPACE
+  , '\x3000' -- IDEOGRAPHIC SPACE
   ]
