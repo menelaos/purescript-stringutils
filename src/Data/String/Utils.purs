@@ -29,12 +29,13 @@ module Data.String.Utils
   )
 where
 
-import Data.Either             (fromRight)
-import Data.Maybe              (Maybe(Just, Nothing))
-import Data.String.Regex       (Regex, replace, regex)
-import Data.String.Regex.Flags (global)
-import Partial.Unsafe          (unsafePartial)
+import Data.Either             ( fromRight )
+import Data.Maybe              ( Maybe(Just, Nothing) )
+import Data.String.Regex       ( Regex, replace, regex )
+import Data.String.Regex.Flags ( global )
+import Partial.Unsafe          ( unsafePartial )
 import Prelude
+import Prim.TypeError          ( class Warn, Text )
 
 import Data.Array as Array
 
@@ -61,7 +62,9 @@ import Data.Array as Array
 -- | -- Data.String.CodeUnits.charAt
 -- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '�'
 -- | ```
-charAt :: Int -> String -> Maybe String
+charAt
+  :: Warn (Text "DEPRECATED: `Data.String.Utils.charAt`")
+  => Int -> String -> Maybe String
 charAt n str = Array.index (toCharArray str) n
 
 -- | DEPRECATED: This function is now available in `purescript-strings`.
@@ -84,7 +87,9 @@ charAt n str = Array.index (toCharArray str) n
 -- | codePointAt'  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 120794
 -- | codePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Just 57313   -- Surrogate code point
 -- | ```
-codePointAt :: Int -> String -> Maybe Int
+codePointAt
+  :: Warn (Text "DEPRECATED: `Data.String.Utils.codePointAt`")
+  => Int -> String -> Maybe Int
 codePointAt = _codePointAt Just Nothing
 
 foreign import _codePointAt
@@ -199,7 +204,9 @@ foreign import includesP :: String -> Int -> String -> Boolean
 -- | length "PureScript" == 10
 -- | length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == 10    -- 14 with `Data.String.length`
 -- | ```
-foreign import length :: String -> Int
+foreign import length
+  :: Warn (Text "DEPRECATED: `Data.String.Utils.length`")
+  => String -> Int
 
 -- | Split a string into an array of strings which were delimited by newline
 -- | characters.
@@ -269,7 +276,9 @@ foreign import _repeat
 -- | DEPRECATED: This function is now available in `purescript-strings`.
 -- |
 -- | Replace all occurences of the first argument with the second argument.
-replaceAll :: String -> String -> String -> String
+replaceAll
+  :: Warn (Text "DEPRECATED: `Data.String.Utils.replaceAll`")
+  => String -> String -> String -> String
 replaceAll = replace <<< mkRegex
   where
     -- Helper function to construct a `Regex` from an input string
@@ -337,7 +346,9 @@ foreign import stripDiacritics :: String -> String
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" ==
 -- |   ['ℙ', '∪', '�', '�', 'ⅇ', 'Ⴝ', '�', '�', '�', '�', 'ⅈ', '�', '�', '†']
 -- | ```
-foreign import toCharArray :: String -> Array String
+foreign import toCharArray
+  :: Warn (Text "DEPRECATED: `Data.String.Utils.toCharArray`")
+  => String -> Array String
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.

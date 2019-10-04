@@ -82,8 +82,10 @@ function includesP (needle) {
   };
 }
 
-function length (str) {
-  return Array.from(str).length;
+function length (warnDict) {
+  return function (str) {
+    return Array.from(str).length;
+  };
 }
 
 function lines (str) {
@@ -144,8 +146,10 @@ function stripDiacritics (str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function toCharArray (str) {
-  return Array.from(str);
+function toCharArray (warnDict) {
+  return function (str) {
+    return Array.from(str);
+  };
 }
 
 function unsafeCodePointAt (i) {

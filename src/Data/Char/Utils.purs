@@ -6,9 +6,10 @@ module Data.Char.Utils
   )
 where
 
-import Data.Int.Bits ((.&.))
-import Data.Maybe    (Maybe(Just, Nothing))
+import Data.Int.Bits  ( (.&.) )
+import Data.Maybe     ( Maybe(Just, Nothing) )
 import Prelude
+import Prim.TypeError ( class Warn, Text )
 
 
 -- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
@@ -21,7 +22,9 @@ import Prelude
 -- | This function uses `String` instead of `Char` because PureScript
 -- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
 -- | code points.
-fromCodePoint :: Int -> Maybe String
+fromCodePoint
+  :: Warn (Text "DEPRECATED: `Data.Char.Utils.fromCodePoint`")
+  => Int -> Maybe String
 fromCodePoint = _fromCodePoint Just Nothing
 
 foreign import _fromCodePoint
