@@ -6,10 +6,11 @@ module Data.Char.Utils
   )
 where
 
-import Data.Int.Bits  ( (.&.) )
-import Data.Maybe     ( Maybe(Just, Nothing) )
+import Data.Function.Uncurried ( Fn1, Fn3, runFn1, runFn3 )
+import Data.Int.Bits           ( (.&.) )
+import Data.Maybe              ( Maybe(Just, Nothing) )
 import Prelude
-import Prim.TypeError ( class Warn, Text )
+import Prim.TypeError          ( class Warn, Text )
 
 
 -- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
@@ -25,13 +26,10 @@ import Prim.TypeError ( class Warn, Text )
 fromCodePoint
   :: Warn (Text "DEPRECATED: `Data.Char.Utils.fromCodePoint`")
   => Int -> Maybe String
-fromCodePoint = _fromCodePoint Just Nothing
+fromCodePoint n = runFn3 fromCodePointImpl Just Nothing n
 
-foreign import _fromCodePoint
-  :: (∀ a. a -> Maybe a)
-  -> (∀ a. Maybe a)
-  -> Int
-  -> Maybe String
+foreign import fromCodePointImpl
+  :: Fn3 (∀ a. a -> Maybe a) (∀ a. Maybe a) Int (Maybe String)
 
 -- | Return true if the given character (Unicode code point) is a high or low
 -- | surrogate code point.
@@ -50,7 +48,10 @@ isSurrogate c = toCodePoint c .&. 0x1FF800 == 0xD800
 -- | ```purescript
 -- | toCodePoint '∀' == 8704
 -- | ```
-foreign import toCodePoint :: String -> Int
+toCodePoint :: String -> Int
+toCodePoint s = runFn1 toCodePointImpl s
+
+foreign import toCodePointImpl :: Fn1 String Int
 
 -- | Return the character corresponding to the given Unicode code point.
 -- | **Unsafe:** Throws runtime exception if the given number is outside the
@@ -58,4 +59,7 @@ foreign import toCodePoint :: String -> Int
 -- | This function uses `String` instead of `Char` because PureScript
 -- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
 -- | code points.
-foreign import unsafeFromCodePoint :: Int -> String
+unsafeFromCodePoint :: Int -> String
+unsafeFromCodePoint n = runFn1 unsafeFromCodePointImpl n
+
+foreign import unsafeFromCodePointImpl :: Fn1 Int String

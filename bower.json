@@ -28,7 +28,8 @@
     "purescript-either": "^4.0.0",
     "purescript-maybe": "^4.0.0",
     "purescript-prelude": "^4.0.0",
-    "purescript-integers": "^4.0.0"
+    "purescript-integers": "^4.0.0",
+    "purescript-functions": "^4.0.0"
   },
   "devDependencies": {
     "purescript-strongcheck": "^4.0.0",

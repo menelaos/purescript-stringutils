@@ -1,18 +1,14 @@
 "use strict";
 
-function _fromCodePoint (Just) {
-  return function (Nothing) {
-    return function (i) {
-      return i >= 0 && i <= 0x10FFFF ? Just(String.fromCodePoint(i)) : Nothing;
-    };
-  };
+function fromCodePointImpl (Just, Nothing, i) {
+  return i >= 0 && i <= 0x10FFFF ? Just(String.fromCodePoint(i)) : Nothing;
 }
 
-function toCodePoint (c) {
+function toCodePointImpl (c) {
   return c.codePointAt(0);
 }
 
-function unsafeFromCodePoint (cp) {
+function unsafeFromCodePointImpl (cp) {
   if (cp >= 0 && cp <= 0x10FFFF) {
     return String.fromCodePoint(cp);
   }
@@ -21,6 +17,6 @@ function unsafeFromCodePoint (cp) {
   }
 }
 
-exports._fromCodePoint      = _fromCodePoint;
-exports.toCodePoint         = toCodePoint;
-exports.unsafeFromCodePoint = unsafeFromCodePoint;
+exports.fromCodePointImpl       = fromCodePointImpl;
+exports.toCodePointImpl         = toCodePointImpl;
+exports.unsafeFromCodePointImpl = unsafeFromCodePointImpl;

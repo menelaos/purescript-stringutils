@@ -30,6 +30,9 @@ module Data.String.Utils
 where
 
 import Data.Either             ( fromRight )
+import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
+                               , runFn1, runFn2, runFn3, runFn4
+                               )
 import Data.Maybe              ( Maybe(Just, Nothing) )
 import Data.String.Regex       ( Regex, replace, regex )
 import Data.String.Regex.Flags ( global )
@@ -90,14 +93,10 @@ charAt n str = Array.index (toCharArray str) n
 codePointAt
   :: Warn (Text "DEPRECATED: `Data.String.Utils.codePointAt`")
   => Int -> String -> Maybe Int
-codePointAt = _codePointAt Just Nothing
+codePointAt n s = runFn4 codePointAtImpl Just Nothing n s
 
-foreign import _codePointAt
-  :: (∀ a. a -> Maybe a)
-  -> (∀ a. Maybe a)
-  -> Int
-  -> String
-  -> Maybe Int
+foreign import codePointAtImpl
+  :: Fn4 (∀ a. a -> Maybe a) (∀ a. Maybe a) Int String (Maybe Int)
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
@@ -122,28 +121,31 @@ foreign import _codePointAt
 -- | codePointAt  19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == Nothing
 -- | ```
 codePointAt' :: Int -> String -> Maybe Int
-codePointAt' = _codePointAtP Just Nothing
+codePointAt' n s = runFn4 codePointAtPrimeImpl Just Nothing n s
 
-foreign import _codePointAtP
-  :: (∀ a. a -> Maybe a)
-  -> (∀ a. Maybe a)
-  -> Int
-  -> String
-  -> Maybe Int
+foreign import codePointAtPrimeImpl
+  :: Fn4 (∀ a. a -> Maybe a) (∀ a. Maybe a) Int String (Maybe Int)
 
 -- | Determine whether the second string ends with the first one.
-foreign import endsWith :: String -> String -> Boolean
+endsWith :: String -> String -> Boolean
+endsWith searchString s = runFn2 endsWithImpl searchString s
+
+foreign import endsWithImpl :: Fn2 String String Boolean
 
 -- | Determine whether the second string ends with the first one
 -- | but search as if the string were only as long as the given argument.
 endsWith' :: String -> Int -> String -> Boolean
-endsWith' = endsWithP
+endsWith' searchString position s
+  = runFn3 endsWithPrimeImpl searchString position s
 
-foreign import endsWithP :: String -> Int -> String -> Boolean
+foreign import endsWithPrimeImpl :: Fn3 String Int String Boolean
 
 -- | Escape a string so that it can be used as a literal string within a regular
 -- | expression.
-foreign import escapeRegex :: String -> String
+escapeRegex :: String -> String
+escapeRegex s = runFn1 escapeRegexImpl s
+
+foreign import escapeRegexImpl :: Fn1 String String
 
 -- | Keep only those characters that satisfy the predicate.
 -- | This function uses `String` instead of `Char` because PureScript
@@ -162,7 +164,10 @@ filter p = fromCharArray <<< Array.filter p <<< toCharArray
 -- | fromCharArray ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
 -- |   == "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†"
 -- | ```
-foreign import fromCharArray :: Array String -> String
+fromCharArray :: Array String -> String
+fromCharArray arr = runFn1 fromCharArrayImpl arr
+
+foreign import fromCharArrayImpl :: Fn1 (Array String) String
 
 -- | Determine whether the second arguments contains the first one.
 -- |
@@ -171,7 +176,10 @@ foreign import fromCharArray :: Array String -> String
 -- | includes "Merchant" "The Merchant of Venice" === true
 -- | includes "Duncan"   "The Merchant of Venice" === false
 -- | ```
-foreign import includes :: String -> String -> Boolean
+includes :: String -> String -> Boolean
+includes searchString s = runFn2 includesImpl searchString s
+
+foreign import includesImpl :: Fn2 String String Boolean
 
 -- | Determine whether the second string argument contains the first one,
 -- | beginning the search at the given position.
@@ -188,9 +196,10 @@ foreign import includes :: String -> String -> Boolean
 -- | -- "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡".includes("𝟡", 10) == true
 -- | ```
 includes' :: String -> Int -> String -> Boolean
-includes' = includesP
+includes' needle position haystack
+  = runFn3 includesPrimeImpl needle position haystack
 
-foreign import includesP :: String -> Int -> String -> Boolean
+foreign import includesPrimeImpl :: Fn3 String Int String Boolean
 
 -- | DEPRECATED: This function is now available in `purescript-strings`.
 -- |
@@ -204,9 +213,12 @@ foreign import includesP :: String -> Int -> String -> Boolean
 -- | length "PureScript" == 10
 -- | length "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == 10    -- 14 with `Data.String.length`
 -- | ```
-foreign import length
+length
   :: Warn (Text "DEPRECATED: `Data.String.Utils.length`")
   => String -> Int
+length s = runFn1 lengthImpl s
+
+foreign import lengthImpl :: Fn1 String Int
 
 -- | Split a string into an array of strings which were delimited by newline
 -- | characters.
@@ -215,7 +227,10 @@ foreign import length
 -- | ```purescript
 -- | lines "Action\nis\neloquence." == ["Action", "is", "eloquence."]
 -- | ```
-foreign import lines :: String -> Array String
+lines :: String -> Array String
+lines s = runFn1 linesImpl s
+
+foreign import linesImpl :: Fn1 String (Array String)
 
 -- | Return the string obtained by applying the mapping function to each
 -- | character (i.e. Unicode code point) of the input string.
@@ -236,7 +251,10 @@ mapChars f = fromCharArray <<< map f <<< toCharArray
 
 -- | Return the `Normalization Form C` of a given string.
 -- | This is the form that is recommended by the W3C.
-foreign import normalize :: String -> String
+normalize :: String -> String
+normalize s = runFn1 normalizeImpl s
+
+foreign import normalizeImpl :: Fn1 String String
 
 -- | Possible Unicode Normalization Forms
 data NormalizationForm = NFC | NFD | NFKC | NFKD
@@ -249,9 +267,9 @@ instance showNormalizationForm :: Show NormalizationForm where
 
 -- | Return a given Unicode Normalization Form of a string.
 normalize' :: NormalizationForm -> String -> String
-normalize' = _normalizeP <<< show
+normalize' nf s = runFn2 normalizePrimeImpl (show nf) s
 
-foreign import _normalizeP :: String -> String -> String
+foreign import normalizePrimeImpl :: Fn2 String String String
 
 -- | Return a string that contains the specified number of copies of the input
 -- | string concatenated together. Return `Nothing` if the repeat count is
@@ -264,14 +282,10 @@ foreign import _normalizeP :: String -> String -> String
 -- | repeat 2147483647 "PureScript" == Nothing
 -- | ```
 repeat :: Int -> String -> Maybe String
-repeat = _repeat Just Nothing
+repeat n s = runFn4 repeatImpl Just Nothing n s
 
-foreign import _repeat
-  :: (∀ a. a -> Maybe a)
-  -> (∀ a. Maybe a)
-  -> Int
-  -> String
-  -> Maybe String
+foreign import repeatImpl
+  :: Fn4 (∀ a. a -> Maybe a) (∀ a. Maybe a) Int String (Maybe String)
 
 -- | DEPRECATED: This function is now available in `purescript-strings`.
 -- |
@@ -286,14 +300,18 @@ replaceAll = replace <<< mkRegex
     mkRegex str = unsafePartial (fromRight (regex (escapeRegex str) global))
 
 -- | Determine whether the second argument starts with the first one.
-foreign import startsWith :: String -> String -> Boolean
+startsWith :: String -> String -> Boolean
+startsWith searchString s = runFn2 startsWithImpl searchString s
+
+foreign import startsWithImpl :: Fn2 String String Boolean
 
 -- | Determine whether a string starts with a certain substring at a given
 -- | position.
 startsWith' :: String -> Int -> String -> Boolean
-startsWith' = startsWithP
+startsWith' searchString position s
+  = runFn3 startsWithPrimeImpl searchString position s
 
-foreign import startsWithP :: String -> Int -> String -> Boolean
+foreign import startsWithPrimeImpl :: Fn3 String Int String Boolean
 
 -- | Strip a set of characters from a string.
 -- | This function is case-sensitive.
@@ -303,7 +321,10 @@ foreign import startsWithP :: String -> Int -> String -> Boolean
 -- | stripChars "aeiou" "PureScript" == "PrScrpt"
 -- | stripChars "AEIOU" "PureScript" == "PureScript"
 -- | ```
-foreign import stripChars :: String -> String -> String
+stripChars :: String -> String -> String
+stripChars chars s = runFn2 stripCharsImpl chars s
+
+foreign import stripCharsImpl :: Fn2 String String String
 
 -- | Strip diacritics from a string.
 -- |
@@ -317,7 +338,10 @@ foreign import stripChars :: String -> String -> String
 -- | stripDiacritics "Týr"             == "Tyr"
 -- | stripDiacritics "Zürich"          == "Zurich"
 -- | ```
-foreign import stripDiacritics :: String -> String
+stripDiacritics :: String -> String
+stripDiacritics s = runFn1 stripDiacriticsImpl s
+
+foreign import stripDiacriticsImpl :: Fn1 String String
 
 -- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
 -- | function can now be reproduced via
@@ -346,9 +370,12 @@ foreign import stripDiacritics :: String -> String
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" ==
 -- |   ['ℙ', '∪', '�', '�', 'ⅇ', 'Ⴝ', '�', '�', '�', '�', 'ⅈ', '�', '�', '†']
 -- | ```
-foreign import toCharArray
+toCharArray
   :: Warn (Text "DEPRECATED: `Data.String.Utils.toCharArray`")
   => String -> Array String
+toCharArray s = runFn1 toCharArrayImpl s
+
+foreign import toCharArrayImpl :: Fn1 String (Array String)
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
@@ -370,7 +397,10 @@ foreign import toCharArray
 -- | unsafeCodePointAt'  2 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 120794
 -- | unsafeCodePointAt' 19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == 57313   -- Surrogate code point
 -- | ```
-foreign import unsafeCodePointAt :: Int -> String -> Int
+unsafeCodePointAt :: Int -> String -> Int
+unsafeCodePointAt n s = runFn2 unsafeCodePointAtImpl n s
+
+foreign import unsafeCodePointAtImpl :: Fn2 Int String Int
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
@@ -395,16 +425,19 @@ foreign import unsafeCodePointAt :: Int -> String -> Int
 -- | unsafeCodePointAt  19 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" -- Error
 -- | ```
 unsafeCodePointAt' :: Int -> String -> Int
-unsafeCodePointAt' = unsafeCodePointAtP
+unsafeCodePointAt' n s = runFn2 unsafeCodePointAtPrimeImpl n s
 
-foreign import unsafeCodePointAtP :: Int -> String -> Int
+foreign import unsafeCodePointAtPrimeImpl :: Fn2 Int String Int
 
 -- | Return a string that contains the specified number of copies of the input
 -- | string concatenated together.
 -- |
 -- | **Unsafe:** Throws runtime exception if the repeat count is negative or if
 -- | the resulting string would overflow the maximum string size.
-foreign import unsafeRepeat :: Int -> String -> String
+unsafeRepeat :: Int -> String -> String
+unsafeRepeat n s = runFn2 unsafeRepeatImpl n s
+
+foreign import unsafeRepeatImpl :: Fn2 Int String String
 
 -- | Split a string into an array of strings which were delimited by white space
 -- | characters.
@@ -413,4 +446,7 @@ foreign import unsafeRepeat :: Int -> String -> String
 -- | ```purescript
 -- | words "Action is eloquence." == ["Action", "is", "eloquence."]
 -- | ```
-foreign import words :: String -> Array String
+words :: String -> Array String
+words s = runFn1 wordsImpl s
+
+foreign import wordsImpl :: Fn1 String (Array String)
