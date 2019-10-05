@@ -9,6 +9,7 @@ module Test.Input
   )
 where
 
+import Data.Bounded               ( bottom, top )
 import Data.List                  (List, fromFoldable)
 import Prelude
 import Test.StrongCheck.Arbitrary (class Arbitrary, arbitrary)
@@ -29,13 +30,13 @@ instance arbCodePoint :: Arbitrary CodePoint where
   arbitrary = CodePoint <$> chooseInt 0 0x10FFFF
 
 instance arbNegativeInt :: Arbitrary NegativeInt where
-  arbitrary = NegativeInt <$> chooseInt (-2147483648) (-1)
+  arbitrary = NegativeInt <$> chooseInt bottom (-1)
 
 instance arbNewlineChar :: Arbitrary NewlineChar where
   arbitrary = NewlineChar <$> elements '\n' newlineChars
 
 instance arbNonNegativeInt :: Arbitrary NonNegativeInt where
-  arbitrary = NonNegativeInt <$> chooseInt 0 2147483647
+  arbitrary = NonNegativeInt <$> chooseInt 0 top
 
 -- Surrogate code points are in the range U+D800 .. U+DFFF
 instance arbSurrogateCodePoint :: Arbitrary SurrogateCodePoint where

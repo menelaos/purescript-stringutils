@@ -2,6 +2,7 @@ module Test.Data.String.Utils
   ( testStringUtils )
 where
 
+import Data.Bounded              ( top )
 import Data.Maybe                (Maybe (Just, Nothing))
 import Data.String               as Data.String
 import Data.String.CodeUnits     as Data.String.CodeUnits
@@ -274,7 +275,7 @@ testStringUtils = do
     repeatEmptyStringProp (NonNegativeInt n) = repeat n "" === Just ""
 
   assert $ repeat 3 "𝟞" === Just "𝟞𝟞𝟞"
-  assert $ repeat 2147483647 "𝟞" === Nothing
+  assert $ repeat top "𝟞" === Nothing
   quickCheck repeatZeroProp
   quickCheck repeatOnceProp
   quickCheck repeatNegativeProp
