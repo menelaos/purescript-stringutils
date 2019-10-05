@@ -12,8 +12,9 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , includes', length, lines, mapChars, normalize
                                  , normalize', repeat, replaceAll, startsWith
                                  , startsWith', stripChars, stripDiacritics
-                                 , toCharArray, unsafeCodePointAt
-                                 , unsafeCodePointAt', unsafeRepeat, words
+                                 , toCharArray, trimEnd, trimStart
+                                 , unsafeCodePointAt, unsafeCodePointAt'
+                                 , unsafeRepeat, words
                                  )
 import Effect                    (Effect)
 import Effect.Console            (log)
@@ -357,6 +358,29 @@ testStringUtils = do
       === ["ℙ", "∪", "𝕣", "ⅇ", "Ⴝ", "𝚌", "𝕣", "ⅈ", "𝚙", "†"]
 
   quickCheck toCharArrayFromCharArrayIdProp
+
+  log "trimEnd"
+  let
+    trimEndIdempotenceProp :: String -> Result
+    trimEndIdempotenceProp = (===) <$> (trimEnd <<< trimEnd) <*> trimEnd
+
+  quickCheck trimEndIdempotenceProp
+
+  log "trimStart"
+  let
+    trimStartIdempotenceProp :: String -> Result
+    trimStartIdempotenceProp =
+      (===) <$> (trimStart <<< trimStart) <*> trimStart
+
+  quickCheck trimStartIdempotenceProp
+
+  log "trimStart <<< trimEnd == Data.String.trim"
+  let
+    trimStartAndTrimEndEqualToTrimProp :: String -> Result
+    trimStartAndTrimEndEqualToTrimProp =
+      (===) <$> (trimStart <<< trimEnd) <*> Data.String.trim
+
+  quickCheck trimStartAndTrimEndEqualToTrimProp
 
   log "unsafeCodePointAt"
   assert $ unsafeCodePointAt  0 "a"          === 97

@@ -22,6 +22,8 @@ module Data.String.Utils
   , stripChars
   , stripDiacritics
   , toCharArray
+  , trimEnd
+  , trimStart
   , unsafeCodePointAt
   , unsafeCodePointAt'
   , unsafeRepeat
@@ -39,6 +41,7 @@ import Data.String.Regex.Flags ( global )
 import Partial.Unsafe          ( unsafePartial )
 import Prelude
 import Prim.TypeError          ( class Warn, Text )
+import Unsafe.Coerce           ( unsafeCoerce )
 
 import Data.Array as Array
 
@@ -376,6 +379,18 @@ toCharArray
 toCharArray s = runFn1 toCharArrayImpl s
 
 foreign import toCharArrayImpl :: Fn1 String (Array String)
+
+-- | Remove whitespace from the end of a string.
+-- | Wrapper around JavaScript's `String.prototype.trimEnd` method.
+trimEnd :: String -> String
+trimEnd s = s'.trimEnd unit
+  where s' = unsafeCoerce s :: { trimEnd :: Unit -> String }
+
+-- | Remove whitespace from the beginning of a string.
+-- | Wrapper around JavaScript's `String.prototype.trimStart` method.
+trimStart :: String -> String
+trimStart s = s'.trimStart unit
+  where s' = unsafeCoerce s :: { trimStart :: Unit -> String }
 
 -- | Return the Unicode code point value of the character at the given index,
 -- | if the index is within bounds.
