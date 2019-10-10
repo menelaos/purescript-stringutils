@@ -15,6 +15,8 @@ module Data.String.Utils
   , mapChars
   , normalize
   , normalize'
+  , padStart
+  , padStart'
   , repeat
   , replaceAll
   , startsWith
@@ -31,19 +33,19 @@ module Data.String.Utils
   )
 where
 
+import Data.Array              as Array
 import Data.Either             ( fromRight )
 import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
                                , runFn1, runFn2, runFn3, runFn4
                                )
 import Data.Maybe              ( Maybe(Just, Nothing) )
+import Data.String.CodeUnits   as CodeUnits
 import Data.String.Regex       ( Regex, replace, regex )
 import Data.String.Regex.Flags ( global )
 import Partial.Unsafe          ( unsafePartial )
 import Prelude
 import Prim.TypeError          ( class Warn, Text )
 import Unsafe.Coerce           ( unsafeCoerce )
-
-import Data.Array as Array
 
 
 -- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
@@ -273,6 +275,66 @@ normalize' :: NormalizationForm -> String -> String
 normalize' nf s = runFn2 normalizePrimeImpl (show nf) s
 
 foreign import normalizePrimeImpl :: Fn2 String String String
+
+-- | Pad the given string with space from the start until the resulting string
+-- | reaches the given length.
+-- | Note that this function handles Unicode as you would expect.
+-- | If you want a simple wrapper around JavaScript's
+-- | `String.prototype.padStart` method, you should use `padStart'`.
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Treats strings as a sequence of Unicode code points
+-- | padStart   1 "0123456789" == "0123456789"
+-- | padStart   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart  11 "0123456789" == " 0123456789"
+-- | padStart  11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == " 𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart  21 "0123456789" == "           0123456789"
+-- | padStart  21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "           𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- |
+-- | -- Treats strings as a sequence of Unicode code units
+-- | padStart'  1 "0123456789" == "0123456789"
+-- | padStart'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart' 11 "0123456789" == " 0123456789"
+-- | padStart' 11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart' 21 "0123456789" == "           0123456789"
+-- | padStart' 21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == " 𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | ```
+padStart :: Int -> String -> String
+padStart n s =
+  let
+    numberOfCodePoints = length s
+    numberOfCodeUnits  = CodeUnits.length s
+  in
+    padStart' (n + numberOfCodeUnits - numberOfCodePoints) s
+
+-- | Wrapper around JavaScript's `String.prototype.padStart` method.
+-- | Note that this function treats strings as a sequence of Unicode
+-- | code units.
+-- | You will probably want to use `padStart` instead.
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Treats strings as a sequence of Unicode code points
+-- | padStart   1 "0123456789" == "0123456789"
+-- | padStart   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart  11 "0123456789" == " 0123456789"
+-- | padStart  11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == " 𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart  21 "0123456789" == "           0123456789"
+-- | padStart  21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "           𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- |
+-- | -- Treats strings as a sequence of Unicode code units
+-- | padStart'  1 "0123456789" == "0123456789"
+-- | padStart'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart' 11 "0123456789" == " 0123456789"
+-- | padStart' 11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padStart' 21 "0123456789" == "           0123456789"
+-- | padStart' 21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == " 𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | ```
+padStart' :: Int -> String -> String
+padStart' n s = runFn2 padStartPrimeImpl n s
+
+foreign import padStartPrimeImpl :: Fn2 Int String String
 
 -- | Return a string that contains the specified number of copies of the input
 -- | string concatenated together. Return `Nothing` if the repeat count is

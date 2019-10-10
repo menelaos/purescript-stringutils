@@ -9,12 +9,12 @@ import Data.String.CodeUnits     as Data.String.CodeUnits
 import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
                                  , escapeRegex, filter, fromCharArray, includes
-                                 , includes', length, lines, mapChars, normalize
-                                 , normalize', repeat, replaceAll, startsWith
-                                 , startsWith', stripChars, stripDiacritics
-                                 , toCharArray, trimEnd, trimStart
-                                 , unsafeCodePointAt, unsafeCodePointAt'
-                                 , unsafeRepeat, words
+                                 , includes', length, lines, mapChars
+                                 , normalize, normalize', padStart, padStart'
+                                 , repeat, replaceAll, startsWith, startsWith'
+                                 , stripChars, stripDiacritics, toCharArray
+                                 , trimEnd, trimStart, unsafeCodePointAt
+                                 , unsafeCodePointAt', unsafeRepeat, words
                                  )
 import Effect                    (Effect)
 import Effect.Console            (log)
@@ -260,6 +260,32 @@ testStringUtils = do
     nfcProp = (===) <$> normalize <*> normalize' NFC
 
   quickCheck nfcProp
+
+  log "padStart"
+  let
+    padStartLengthProp :: String -> Result
+    padStartLengthProp s = padStart (length s) s === s
+
+  assert $ padStart   1 "0123456789" == "0123456789"
+  assert $ padStart   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padStart  11 "0123456789" == " 0123456789"
+  assert $ padStart  11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == " 𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padStart  21 "0123456789" == "           0123456789"
+  assert $ padStart  21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "           𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  quickCheck padStartLengthProp
+
+  log "padStart'"
+  let
+    padStartPrimeLengthProp :: String -> Result
+    padStartPrimeLengthProp s = padStart' (length s) s === s
+
+  assert $ padStart'  1 "0123456789" == "0123456789"
+  assert $ padStart'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padStart' 11 "0123456789" == " 0123456789"
+  assert $ padStart' 11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padStart' 21 "0123456789" == "           0123456789"
+  assert $ padStart' 21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == " 𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  quickCheck padStartPrimeLengthProp
 
   log "repeat"
   let
