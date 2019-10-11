@@ -12,9 +12,9 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , includes', length, lines, mapChars, normalize
                                  , normalize', repeat, replaceAll, startsWith
                                  , startsWith', stripChars, stripDiacritics
-                                 , toCharArray, trimEnd, trimStart
-                                 , unsafeCodePointAt, unsafeCodePointAt'
-                                 , unsafeRepeat, words
+                                 , stripMargin, stripMarginWith, toCharArray
+                                 , trimEnd, trimStart, unsafeCodePointAt
+                                 , unsafeCodePointAt', unsafeRepeat, words
                                  )
 import Effect                    (Effect)
 import Effect.Console            (log)
@@ -345,6 +345,49 @@ testStringUtils = do
   assert $ stripDiacritics "Raison d'être"   === "Raison d'etre"
   assert $ stripDiacritics "Týr"             === "Tyr"
   assert $ stripDiacritics "Zürich"          === "Zurich"
+
+  log "stripMarginWith"
+
+  assert $ stripMarginWith "@ " """@ Line 1
+                                   @ Line 2
+                                   @ Line 3"""
+                            == "Line 1\nLine 2\nLine 3"
+
+  assert $ stripMarginWith "@ " """Line 1
+                                 x@ Line 2
+                                   Line 3
+                                      @ Line 4
+                                  @ Line 5"""
+           == "Line 1\n                                 x@ Line 2\n                                   Line 3\nLine 4\nLine 5"
+
+  assert $ stripMarginWith ""
+    """
+    Line 1
+    Line 2
+    Line 3
+    """
+           == "Line 1\nLine 2\nLine 3"
+
+  log "stripMargin"
+
+  assert $ stripMargin """|Line 1
+                          |Line 2
+                          |Line 3"""
+           == "Line 1\nLine 2\nLine 3"
+
+  assert $ stripMargin """Line 1
+                         x|Line 2
+                           Line 3
+                              |Line 4
+                          |Line 5"""
+          == "Line 1\n                         x|Line 2\n                           Line 3\nLine 4\nLine 5"
+
+  assert $ stripMargin
+    """
+    |Line 1
+    |Line 2
+    |Line 3
+    """ == "Line 1\nLine 2\nLine 3"
 
   log "toCharArray"
   let

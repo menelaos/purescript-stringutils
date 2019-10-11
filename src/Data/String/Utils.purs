@@ -21,6 +21,8 @@ module Data.String.Utils
   , startsWith'
   , stripChars
   , stripDiacritics
+  , stripMargin
+  , stripMarginWith
   , toCharArray
   , trimEnd
   , trimStart
@@ -36,8 +38,11 @@ import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
                                , runFn1, runFn2, runFn3, runFn4
                                )
 import Data.Maybe              ( Maybe(Just, Nothing) )
+import Data.String             ( joinWith, trim )
+import Data.String.CodePoints  ( drop )
+import Data.String.CodePoints  ( length ) as String
 import Data.String.Regex       ( Regex, replace, regex )
-import Data.String.Regex.Flags ( global )
+import Data.String.Regex.Flags ( global, noFlags )
 import Partial.Unsafe          ( unsafePartial )
 import Prelude
 import Prim.TypeError          ( class Warn, Text )
@@ -345,6 +350,28 @@ stripDiacritics :: String -> String
 stripDiacritics s = runFn1 stripDiacriticsImpl s
 
 foreign import stripDiacriticsImpl :: Fn1 String String
+
+-- | Removes leading whitespace and pipe character from each line. Useful for
+-- | dedenting strings enclosed in triple double quotation marks.
+stripMargin :: String -> String
+stripMargin = stripMarginWith "|"
+
+-- | Same as `stripMargin` except with the option to use any given string
+-- | to delimit the margin.
+stripMarginWith :: String -> String -> String
+stripMarginWith delimiter =
+  let
+    unlines = joinWith "\n"
+    mapLines f = unlines <<< map f <<< lines
+  in
+    trim >>> mapLines \line ->
+      let
+        trimmed = replace (unsafePartial $ fromRight $ regex "^\\s*" noFlags) "" line
+      in
+        if startsWith delimiter trimmed
+          then drop (String.length delimiter) trimmed
+          else line
+
 
 -- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
 -- | function can now be reproduced via
