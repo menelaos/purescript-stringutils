@@ -15,6 +15,8 @@ module Data.String.Utils
   , mapChars
   , normalize
   , normalize'
+  , padEnd
+  , padEnd'
   , padStart
   , padStart'
   , repeat
@@ -275,6 +277,66 @@ normalize' :: NormalizationForm -> String -> String
 normalize' nf s = runFn2 normalizePrimeImpl (show nf) s
 
 foreign import normalizePrimeImpl :: Fn2 String String String
+
+-- | Pad the given string with space from the end until the resulting string
+-- | reaches the given length.
+-- | Note that this function handles Unicode as you would expect.
+-- | If you want a simple wrapper around JavaScript's
+-- | `String.prototype.padEnd` method, you should use `padEnd'`.
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Treats strings as a sequence of Unicode code points
+-- | padEnd   1 "0123456789" == "0123456789"
+-- | padEnd   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padEnd  11 "0123456789" == "0123456789 "
+-- | padEnd  11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡 "
+-- | padEnd  21 "0123456789" == "0123456789           "
+-- | padEnd  21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡           "
+-- |
+-- | -- Treats strings as a sequence of Unicode code units
+-- | padEnd'  1 "0123456789" == "0123456789"
+-- | padEnd'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padEnd' 11 "0123456789" == "0123456789 "
+-- | padEnd' 11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padEnd' 21 "0123456789" == "0123456789           "
+-- | padEnd' 21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡 "
+-- | ```
+padEnd :: Int -> String -> String
+padEnd n s =
+  let
+    numberOfCodePoints = length s
+    numberOfCodeUnits  = CodeUnits.length s
+  in
+    padEnd' (n + numberOfCodeUnits - numberOfCodePoints) s
+
+-- | Wrapper around JavaScript's `String.prototype.padEnd` method.
+-- | Note that this function treats strings as a sequence of Unicode
+-- | code units.
+-- | You will probably want to use `padEnd` instead.
+-- |
+-- | Example:
+-- | ```purescript
+-- | -- Treats strings as a sequence of Unicode code points
+-- | padEnd   1 "0123456789" == "0123456789"
+-- | padEnd   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padEnd  11 "0123456789" == "0123456789 "
+-- | padEnd  11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡 "
+-- | padEnd  21 "0123456789" == "0123456789           "
+-- | padEnd  21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡           "
+-- |
+-- | -- Treats strings as a sequence of Unicode code units
+-- | padEnd'  1 "0123456789" == "0123456789"
+-- | padEnd'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padEnd' 11 "0123456789" == "0123456789 "
+-- | padEnd' 11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+-- | padEnd' 21 "0123456789" == "0123456789           "
+-- | padEnd' 21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡 "
+-- | ```
+padEnd' :: Int -> String -> String
+padEnd' n s = runFn2 padEndPrimeImpl n s
+
+foreign import padEndPrimeImpl :: Fn2 Int String String
 
 -- | Pad the given string with space from the start until the resulting string
 -- | reaches the given length.

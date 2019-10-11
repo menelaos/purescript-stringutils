@@ -10,10 +10,11 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , codePointAt', endsWith, endsWith'
                                  , escapeRegex, filter, fromCharArray, includes
                                  , includes', length, lines, mapChars
-                                 , normalize, normalize', padStart, padStart'
-                                 , repeat, replaceAll, startsWith, startsWith'
-                                 , stripChars, stripDiacritics, toCharArray
-                                 , trimEnd, trimStart, unsafeCodePointAt
+                                 , normalize, normalize', padEnd, padEnd'
+                                 , padStart, padStart', repeat, replaceAll
+                                 , startsWith, startsWith', stripChars
+                                 , stripDiacritics, toCharArray, trimEnd
+                                 , trimStart, unsafeCodePointAt
                                  , unsafeCodePointAt', unsafeRepeat, words
                                  )
 import Effect                    (Effect)
@@ -260,6 +261,32 @@ testStringUtils = do
     nfcProp = (===) <$> normalize <*> normalize' NFC
 
   quickCheck nfcProp
+
+  log "padEnd"
+  let
+    padEndLengthProp :: String -> Result
+    padEndLengthProp s = padEnd (length s) s === s
+
+  assert $ padEnd   1 "0123456789" == "0123456789"
+  assert $ padEnd   1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padEnd  11 "0123456789" == "0123456789 "
+  assert $ padEnd  11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡 "
+  assert $ padEnd  21 "0123456789" == "0123456789           "
+  assert $ padEnd  21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡           "
+  quickCheck padEndLengthProp
+
+  log "padEnd'"
+  let
+    padEndPrimeLengthProp :: String -> Result
+    padEndPrimeLengthProp s = padEnd' (length s) s === s
+
+  assert $ padEnd'  1 "0123456789" == "0123456789"
+  assert $ padEnd'  1 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padEnd' 11 "0123456789" == "0123456789 "
+  assert $ padEnd' 11 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"
+  assert $ padEnd' 21 "0123456789" == "0123456789           "
+  assert $ padEnd' 21 "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" == "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡 "
+  quickCheck padEndPrimeLengthProp
 
   log "padStart"
   let

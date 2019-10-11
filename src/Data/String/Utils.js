@@ -75,6 +75,10 @@ function normalizePrimeImpl (normalizationForm, str) {
   return str.normalize(normalizationForm);
 }
 
+function padEndPrimeImpl (targetLength, str) {
+  return str.padEnd(targetLength);
+}
+
 function padStartPrimeImpl (targetLength, str) {
   return str.padStart(targetLength);
 }
@@ -159,6 +163,7 @@ exports.lengthImpl                 = lengthImpl;
 exports.linesImpl                  = linesImpl;
 exports.normalizeImpl              = normalizeImpl;
 exports.normalizePrimeImpl         = normalizePrimeImpl;
+exports.padEndPrimeImpl            = padEndPrimeImpl;
 exports.padStartPrimeImpl          = padStartPrimeImpl;
 exports.repeatImpl                 = repeatImpl;
 exports.startsWithImpl             = startsWithImpl;
