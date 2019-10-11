@@ -13,7 +13,8 @@ import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
                                  , normalize, normalize', padEnd, padEnd'
                                  , padStart, padStart', repeat, replaceAll
                                  , startsWith, startsWith', stripChars
-                                 , stripDiacritics, toCharArray, trimEnd
+                                 , stripDiacritics, stripMargin
+                                 , stripMarginWith, toCharArray, trimEnd
                                  , trimStart, unsafeCodePointAt
                                  , unsafeCodePointAt', unsafeRepeat, words
                                  )
@@ -398,6 +399,60 @@ testStringUtils = do
   assert $ stripDiacritics "Raison d'être"   === "Raison d'etre"
   assert $ stripDiacritics "Týr"             === "Tyr"
   assert $ stripDiacritics "Zürich"          === "Zurich"
+
+  log "stripMargin"
+  assert $ stripMargin
+    """|Line 1
+       |Line 2
+       |Line 3"""
+    == "Line 1\nLine 2\nLine 3"
+
+  -- Test that `stripMargin` mirrors Scala's behaviour for ill-formed input
+  -- strings. This behaviour is not set in stone, however, and may change in
+  -- the future.
+  assert $ stripMargin
+    """Line 1
+      x|Line 2
+        Line 3
+           |Line 4
+       |Line 5"""
+    == "Line 1\n      x|Line 2\n        Line 3\nLine 4\nLine 5"
+
+  assert $ stripMargin
+    """
+
+    |Line 1
+    |Line 2
+    |Line 3
+
+    """
+    == "Line 1\nLine 2\nLine 3"
+
+  log "stripMarginWith"
+  assert $ stripMarginWith "@ "
+    """@ Line 1
+       @ Line 2
+       @ Line 3"""
+    == "Line 1\nLine 2\nLine 3"
+
+  -- Test that `stripMarginWith` mirrors Scala's behaviour for ill-formed input
+  -- strings. This behaviour is not set in stone, however, and may change in
+  -- the future.
+  assert $ stripMarginWith "@ "
+    """Line 1
+     x@ Line 2
+       Line 3
+          @ Line 4
+      @ Line 5"""
+    == "Line 1\n     x@ Line 2\n       Line 3\nLine 4\nLine 5"
+
+  assert $ stripMarginWith ">> "
+    """
+    >> Line 1
+    >> Line 2
+    >> Line 3
+    """
+    == "Line 1\nLine 2\nLine 3"
 
   log "toCharArray"
   let

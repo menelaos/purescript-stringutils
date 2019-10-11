@@ -25,6 +25,8 @@ module Data.String.Utils
   , startsWith'
   , stripChars
   , stripDiacritics
+  , stripMargin
+  , stripMarginWith
   , toCharArray
   , trimEnd
   , trimStart
@@ -42,6 +44,9 @@ import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
                                )
 import Data.Maybe              ( Maybe(Just, Nothing) )
 import Data.String.CodeUnits   as CodeUnits
+import Data.String             ( joinWith, trim )
+import Data.String.CodePoints  ( drop )
+import Data.String.CodePoints  ( length ) as String
 import Data.String.Regex       ( Regex, replace, regex )
 import Data.String.Regex.Flags ( global )
 import Partial.Unsafe          ( unsafePartial )
@@ -469,6 +474,50 @@ stripDiacritics :: String -> String
 stripDiacritics s = runFn1 stripDiacriticsImpl s
 
 foreign import stripDiacriticsImpl :: Fn1 String String
+
+-- | Removes leading whitespace and pipe character from each line. Useful for
+-- | dedenting strings enclosed in triple double quotation marks.
+-- | Inspired by Scala's `stripMargin` method.
+-- | Does not preserve original line endings.
+-- |
+-- | Example:
+-- | ```purescript
+-- | stripMargin
+-- |   """
+-- |   |Line 1
+-- |   |Line 2
+-- |   |Line 3
+-- |   """
+-- | == "Line 1\nLine 2\nLine 3"
+-- | ```
+stripMargin :: String -> String
+stripMargin = stripMarginWith "|"
+
+-- | Same as `stripMargin` except with the option to use any given string
+-- | to delimit the margin.
+-- | Does not preserve original line endings.
+-- |
+-- | Example:
+-- | ```purescript
+-- | stripMarginWith ">> "
+-- |   """
+-- |   >> Line 1
+-- |   >> Line 2
+-- |   >> Line 3
+-- |   """
+-- | == "Line 1\nLine 2\nLine 3"
+-- | ```
+stripMarginWith :: String -> String -> String
+stripMarginWith delimiter = joinWith "\n" <<< map go <<< lines <<< trim
+  where
+  go :: String -> String
+  go line =
+    let
+      trimmed = trimStart line
+    in
+      if startsWith delimiter trimmed
+        then drop (String.length delimiter) trimmed
+        else line
 
 -- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
 -- | function can now be reproduced via
