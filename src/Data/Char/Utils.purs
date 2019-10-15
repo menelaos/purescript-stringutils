@@ -8,7 +8,7 @@ where
 
 import Data.Function.Uncurried ( Fn1, Fn3, runFn1, runFn3 )
 import Data.Int.Bits           ( (.&.) )
-import Data.Maybe              ( Maybe(Just, Nothing) )
+import Data.Maybe              ( Maybe (Just, Nothing) )
 import Prelude
 import Prim.TypeError          ( class Warn, Text )
 

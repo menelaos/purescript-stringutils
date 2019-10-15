@@ -1,5 +1,5 @@
 module Data.String.Utils
-  ( NormalizationForm(..)
+  ( NormalizationForm (..)
   , charAt
   , codePointAt
   , codePointAt'
@@ -42,7 +42,7 @@ import Data.Either             ( fromRight )
 import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
                                , runFn1, runFn2, runFn3, runFn4
                                )
-import Data.Maybe              ( Maybe(Just, Nothing) )
+import Data.Maybe              ( Maybe (Just, Nothing) )
 import Data.String.CodeUnits   as CodeUnits
 import Data.String             ( joinWith, trim )
 import Data.String.CodePoints  ( drop )

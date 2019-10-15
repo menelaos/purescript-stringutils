@@ -2,31 +2,30 @@ module Test.Data.String.Utils
   ( testStringUtils )
 where
 
-import Data.Bounded              ( top )
-import Data.Maybe                (Maybe (Just, Nothing))
-import Data.String               as Data.String
-import Data.String.CodeUnits     as Data.String.CodeUnits
-import Data.String.Utils         ( NormalizationForm(NFC), charAt, codePointAt
-                                 , codePointAt', endsWith, endsWith'
-                                 , escapeRegex, filter, fromCharArray, includes
-                                 , includes', length, lines, mapChars
-                                 , normalize, normalize', padEnd, padEnd'
-                                 , padStart, padStart', repeat, replaceAll
-                                 , startsWith, startsWith', stripChars
-                                 , stripDiacritics, stripMargin
-                                 , stripMarginWith, toCharArray, trimEnd
-                                 , trimStart, unsafeCodePointAt
-                                 , unsafeCodePointAt', unsafeRepeat, words
-                                 )
-import Effect                    (Effect)
-import Effect.Console            (log)
+import Data.Maybe            ( Maybe (Just, Nothing) )
+import Data.String           as Data.String
+import Data.String.CodeUnits as Data.String.CodeUnits
+import Data.String.Utils     ( NormalizationForm (NFC), charAt, codePointAt
+                             , codePointAt', endsWith, endsWith'
+                             , escapeRegex, filter, fromCharArray, includes
+                             , includes', length, lines, mapChars
+                             , normalize, normalize', padEnd, padEnd'
+                             , padStart, padStart', repeat, replaceAll
+                             , startsWith, startsWith', stripChars
+                             , stripDiacritics, stripMargin
+                             , stripMarginWith, toCharArray, trimEnd
+                             , trimStart, unsafeCodePointAt
+                             , unsafeCodePointAt', unsafeRepeat, words
+                             )
+import Effect                ( Effect )
+import Effect.Console        ( log )
 import Prelude
-import Test.Input                ( NegativeInt(NegativeInt)
-                                 , NewlineChar(NewlineChar)
-                                 , NonNegativeInt(NonNegativeInt)
-                                 , WhiteSpaceChar(WhiteSpaceChar)
-                                 )
-import Test.StrongCheck          (Result, (===), assert, quickCheck)
+import Test.Input            ( NegativeInt (NegativeInt)
+                             , NewlineChar (NewlineChar)
+                             , NonNegativeInt (NonNegativeInt)
+                             , WhiteSpaceChar (WhiteSpaceChar)
+                             )
+import Test.StrongCheck      ( Result, (===), assert, quickCheck )
 
 testStringUtils :: Effect Unit
 testStringUtils = do

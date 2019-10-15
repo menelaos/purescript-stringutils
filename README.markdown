@@ -2,12 +2,13 @@
 
 String utility functions that (for various reasons) are not in
 [`purescript-strings`](https://github.com/purescript/purescript-strings).
-Note that some of these functions use ES6 features.
+Note that some of these functions use ECMAScript features that may not be
+available on older platforms.
 
 ## Installation
 
 ```
-bower install purescript-stringutils
+spago install stringutils
 ```
 
 ## Documentation

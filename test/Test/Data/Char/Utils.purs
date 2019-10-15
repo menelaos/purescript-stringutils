@@ -2,19 +2,19 @@ module Test.Data.Char.Utils
   ( testCharUtils )
 where
 
-import Data.Char.Utils            ( fromCodePoint, isSurrogate, toCodePoint
-                                  , unsafeFromCodePoint
-                                  )
-import Data.Maybe                 (Maybe(Just, Nothing), fromJust, isJust)
-import Effect                     (Effect)
-import Effect.Console             (log)
-import Partial.Unsafe             (unsafePartial)
+import Data.Char.Utils  ( fromCodePoint, isSurrogate, toCodePoint
+                        , unsafeFromCodePoint
+                        )
+import Data.Maybe       ( Maybe (Just, Nothing), fromJust, isJust )
+import Effect           ( Effect )
+import Effect.Console   ( log )
+import Partial.Unsafe   ( unsafePartial )
 import Prelude
-import Test.Input                 ( CodePoint(CodePoint)
-                                  , OneCharString(OneCharString)
-                                  , SurrogateCodePoint(SurrogateCodePoint)
-                                  )
-import Test.StrongCheck           (Result, (===), assert, quickCheck)
+import Test.Input       ( CodePoint (CodePoint)
+                        , OneCharString (OneCharString)
+                        , SurrogateCodePoint (SurrogateCodePoint)
+                        )
+import Test.StrongCheck ( Result, (===), assert, quickCheck )
 
 testCharUtils :: Effect Unit
 testCharUtils = do

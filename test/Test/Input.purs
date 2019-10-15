@@ -1,20 +1,19 @@
 module Test.Input
-  ( CodePoint(..)
-  , NegativeInt(..)
-  , NewlineChar(..)
-  , NonNegativeInt(..)
-  , SurrogateCodePoint(..)
-  , WhiteSpaceChar(..)
-  , OneCharString(..)
+  ( CodePoint (..)
+  , NegativeInt (..)
+  , NewlineChar (..)
+  , NonNegativeInt (..)
+  , SurrogateCodePoint (..)
+  , WhiteSpaceChar (..)
+  , OneCharString (..)
   )
 where
 
-import Data.Bounded               ( bottom, top )
-import Data.List                  (List, fromFoldable)
+import Data.List                  ( List, fromFoldable )
 import Prelude
-import Test.StrongCheck.Arbitrary (class Arbitrary, arbitrary)
-import Test.StrongCheck.Gen       (chooseInt, elements)
-import Unsafe.Coerce              (unsafeCoerce)
+import Test.StrongCheck.Arbitrary ( class Arbitrary, arbitrary )
+import Test.StrongCheck.Gen       ( chooseInt, elements )
+import Unsafe.Coerce              ( unsafeCoerce )
 
 
 newtype CodePoint          = CodePoint Int
