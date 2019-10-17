@@ -44,8 +44,7 @@ import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
                                )
 import Data.Maybe              ( Maybe (Just, Nothing) )
 import Data.String.CodeUnits   as CodeUnits
-import Data.String             ( joinWith, trim )
-import Data.String.CodePoints  ( drop )
+import Data.String             ( drop, joinWith, trim )
 import Data.String.CodePoints  ( length ) as String
 import Data.String.Regex       ( Regex, replace, regex )
 import Data.String.Regex.Flags ( global )
@@ -302,7 +301,7 @@ foreign import normalizePrimeImpl :: Fn2 String String String
 padEnd :: Int -> String -> String
 padEnd n s =
   let
-    numberOfCodePoints = length s
+    numberOfCodePoints = String.length s
     numberOfCodeUnits  = CodeUnits.length s
   in
     padEnd' (n + numberOfCodeUnits - numberOfCodePoints) s
@@ -362,7 +361,7 @@ foreign import padEndPrimeImpl :: Fn2 Int String String
 padStart :: Int -> String -> String
 padStart n s =
   let
-    numberOfCodePoints = length s
+    numberOfCodePoints = String.length s
     numberOfCodeUnits  = CodeUnits.length s
   in
     padStart' (n + numberOfCodeUnits - numberOfCodePoints) s
