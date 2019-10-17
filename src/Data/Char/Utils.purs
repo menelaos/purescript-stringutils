@@ -10,22 +10,14 @@ import Data.Function.Uncurried ( Fn1, Fn3, runFn1, runFn3 )
 import Data.Int.Bits           ( (.&.) )
 import Data.Maybe              ( Maybe (Just, Nothing) )
 import Prelude
-import Prim.TypeError          ( class Warn, Text )
 
 
--- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
--- | function can now be reproduced via `map Data.String.singleton <<< toEnum`.
--- | In order to keep the string-related API surface area small, this function
--- | will probably be removed at some point.
--- |
 -- | Return the character corresponding to the given Unicode code point and
 -- | `Nothing` if the given number is outside the range 0 .. 0x10FFFF.
 -- | This function uses `String` instead of `Char` because PureScript
 -- | `Char`s must be UTF-16 code units and hence cannot represent all Unicode
 -- | code points.
-fromCodePoint
-  :: Warn (Text "DEPRECATED: `Data.Char.Utils.fromCodePoint`")
-  => Int -> Maybe String
+fromCodePoint :: Int -> Maybe String
 fromCodePoint n = runFn3 fromCodePointImpl Just Nothing n
 
 foreign import fromCodePointImpl

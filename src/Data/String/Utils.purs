@@ -55,12 +55,6 @@ import Prim.TypeError          ( class Warn, Text )
 import Unsafe.Coerce           ( unsafeCoerce )
 
 
--- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
--- | function can now be reproduced via
--- | `charAt n = map Data.String.singleton <<< Data.String.codePointAt n`.
--- | In order to keep the string-related API surface area small, this function
--- | will probably be removed at some point.
--- |
 -- | Return the character at the given index, if the index is within bounds.
 -- | Note that this function handles Unicode as you would expect.
 -- | If you want a simple wrapper around JavaScript's `String.prototype.charAt`
@@ -77,9 +71,7 @@ import Unsafe.Coerce           ( unsafeCoerce )
 -- | -- Data.String.CodeUnits.charAt
 -- | charAt 2 "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" == Just '�'
 -- | ```
-charAt
-  :: Warn (Text "DEPRECATED: `Data.String.Utils.charAt`")
-  => Int -> String -> Maybe String
+charAt :: Int -> String -> Maybe String
 charAt n str = Array.index (toCharArray str) n
 
 -- | DEPRECATED: This function is now available in `purescript-strings`.
@@ -519,12 +511,6 @@ stripMarginWith delimiter = joinWith "\n" <<< map go <<< lines <<< trim
         then drop (String.length delimiter) trimmed
         else line
 
--- | DEPRECATED: With the adoption of CodePoints in `purescript-strings`, this
--- | function can now be reproduced via
--- | `map Data.String.singleton <<< Data.String.toCodePointArray`.
--- | In order to keep the string-related API surface area small, this function
--- | will probably be removed at some point.
--- |
 -- | Convert a string to an array of Unicode code points.
 -- | Note that this function is different from
 -- | `Data.String.CodeUnits.toCharArray` in `purescript-strings` which
@@ -546,9 +532,7 @@ stripMarginWith delimiter = joinWith "\n" <<< map go <<< lines <<< trim
 -- | toCharArray "ℙ∪𝕣ⅇႽ𝚌𝕣ⅈ𝚙†" ==
 -- |   ['ℙ', '∪', '�', '�', 'ⅇ', 'Ⴝ', '�', '�', '�', '�', 'ⅈ', '�', '�', '†']
 -- | ```
-toCharArray
-  :: Warn (Text "DEPRECATED: `Data.String.Utils.toCharArray`")
-  => String -> Array String
+toCharArray :: String -> Array String
 toCharArray s = runFn1 toCharArrayImpl s
 
 foreign import toCharArrayImpl :: Fn1 String (Array String)
