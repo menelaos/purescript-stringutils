@@ -10,6 +10,7 @@ You can edit this file as you like.
     "git://github.com/menelaos/purescript-stringutils.git"
 , dependencies =
     [ "arrays"
+    , "assert"
     , "console"
     , "effect"
     , "either"
@@ -20,8 +21,8 @@ You can edit this file as you like.
     , "partial"
     , "prelude"
     , "psci-support"
+    , "quickcheck"
     , "strings"
-    , "strongcheck"
     , "unsafe-coerce"
     ]
 , packages =

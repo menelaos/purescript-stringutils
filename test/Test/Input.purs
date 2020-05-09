@@ -9,11 +9,13 @@ module Test.Input
   )
 where
 
-import Data.List                  ( List, fromFoldable )
+import Data.Array.NonEmpty       ( NonEmptyArray, fromArray, toNonEmpty )
+import Data.Maybe                ( fromJust )
+import Partial.Unsafe            ( unsafePartial )
 import Prelude
-import Test.StrongCheck.Arbitrary ( class Arbitrary, arbitrary )
-import Test.StrongCheck.Gen       ( chooseInt, elements )
-import Unsafe.Coerce              ( unsafeCoerce )
+import Test.QuickCheck.Arbitrary ( class Arbitrary, arbitrary )
+import Test.QuickCheck.Gen       ( chooseInt, elements )
+import Unsafe.Coerce             ( unsafeCoerce )
 
 
 newtype CodePoint          = CodePoint Int
@@ -32,7 +34,7 @@ instance arbNegativeInt :: Arbitrary NegativeInt where
   arbitrary = NegativeInt <$> chooseInt bottom (-1)
 
 instance arbNewlineChar :: Arbitrary NewlineChar where
-  arbitrary = NewlineChar <$> elements '\n' newlineChars
+  arbitrary = NewlineChar <$> elements (toNonEmpty newlineChars)
 
 instance arbNonNegativeInt :: Arbitrary NonNegativeInt where
   arbitrary = NonNegativeInt <$> chooseInt 0 top
@@ -42,14 +44,15 @@ instance arbSurrogateCodePoint :: Arbitrary SurrogateCodePoint where
   arbitrary = SurrogateCodePoint <$> chooseInt 0xD800 0xDFFF
 
 instance arbWhiteSpaceChar :: Arbitrary WhiteSpaceChar where
-  arbitrary = WhiteSpaceChar <$> elements ' ' whiteSpaceChars
+  arbitrary = WhiteSpaceChar <$> elements (toNonEmpty whiteSpaceChars)
 
 instance arbOneCharString :: Arbitrary OneCharString where
   arbitrary = OneCharString <<< (unsafeCoerce :: Char -> String) <$> arbitrary
 
 -- Unicode line terminators
-newlineChars :: List Char
-newlineChars = fromFoldable
+newlineChars :: NonEmptyArray Char
+-- newlineChars = unsafePartial <<< fromJust <<< fromArray $
+newlineChars = unsafePartial (fromJust (fromArray
   [ '\x000A' -- LINE FEED
   , '\x000B' -- VERTICAL TAB
   , '\x000C' -- FORM FEED
@@ -57,11 +60,11 @@ newlineChars = fromFoldable
   , '\x0085' -- NEXT LINE
   , '\x2028' -- LINE SEPARATOR
   , '\x2029' -- PARAGRAPH SEPARATOR
-  ]
+  ]))
 
 -- Unicode whitespace characters (25 as of Unicode 12.1)
-whiteSpaceChars :: List Char
-whiteSpaceChars = newlineChars <> fromFoldable
+whiteSpaceChars :: NonEmptyArray Char
+whiteSpaceChars = newlineChars <> unsafePartial (fromJust (fromArray
   [ '\x0009' -- CHARACTER TABULATION
   , '\x0020' -- SPACE
   , '\x00A0' -- NO-BREAK SPACE
@@ -80,4 +83,4 @@ whiteSpaceChars = newlineChars <> fromFoldable
   , '\x202F' -- NARROW NO-BREAK SPACE
   , '\x205F' -- MEDIUM MATHEMATICAL SPACE
   , '\x3000' -- IDEOGRAPHIC SPACE
-  ]
+  ]))
