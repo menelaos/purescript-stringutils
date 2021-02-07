@@ -20,7 +20,6 @@ module Data.String.Utils
   , padStart
   , padStart'
   , repeat
-  , replaceAll
   , startsWith
   , startsWith'
   , stripChars
@@ -409,18 +408,6 @@ repeat n s = runFn4 repeatImpl Just Nothing n s
 
 foreign import repeatImpl
   :: Fn4 (∀ a. a -> Maybe a) (∀ a. Maybe a) Int String (Maybe String)
-
--- | DEPRECATED: This function is now available in `purescript-strings`.
--- |
--- | Replace all occurences of the first argument with the second argument.
-replaceAll
-  :: Warn (Text "DEPRECATED: `Data.String.Utils.replaceAll`")
-  => String -> String -> String -> String
-replaceAll = replace <<< mkRegex
-  where
-    -- Helper function to construct a `Regex` from an input string
-    mkRegex :: String -> Regex
-    mkRegex str = unsafePartial (fromRight (regex (escapeRegex str) global))
 
 -- | Determine whether the second argument starts with the first one.
 startsWith :: String -> String -> Boolean
