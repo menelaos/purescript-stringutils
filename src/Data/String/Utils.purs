@@ -37,21 +37,20 @@ module Data.String.Utils
   )
 where
 
-import Data.Array              as Array
-import Data.Either             ( fromRight )
-import Data.Function.Uncurried ( Fn1, Fn2, Fn3, Fn4
-                               , runFn1, runFn2, runFn3, runFn4
-                               )
-import Data.Maybe              ( Maybe (Just, Nothing) )
-import Data.String.CodeUnits   as CodeUnits
-import Data.String             ( drop, joinWith, trim )
-import Data.String.CodePoints  ( length ) as String
-import Data.String.Regex       ( Regex, replace, regex )
-import Data.String.Regex.Flags ( global )
-import Partial.Unsafe          ( unsafePartial )
+import Data.Array               as Array
+import Data.Function.Uncurried  ( Fn1, Fn2, Fn3, Fn4
+                                , runFn1, runFn2, runFn3, runFn4
+                                )
+import Data.Maybe               ( Maybe (Just, Nothing) )
+import Data.String.CodeUnits    as CodeUnits
+import Data.String              ( drop, joinWith, trim )
+import Data.String.CodePoints   ( length ) as String
+import Data.String.Regex        ( Regex, replace )
+import Data.String.Regex.Flags  ( global )
+import Data.String.Regex.Unsafe ( unsafeRegex )
 import Prelude
-import Prim.TypeError          ( class Warn, Text )
-import Unsafe.Coerce           ( unsafeCoerce )
+import Prim.TypeError           ( class Warn, Text )
+import Unsafe.Coerce            ( unsafeCoerce )
 
 
 -- | Return the character at the given index, if the index is within bounds.
@@ -420,7 +419,7 @@ replaceAll = replace <<< mkRegex
   where
     -- Helper function to construct a `Regex` from an input string
     mkRegex :: String -> Regex
-    mkRegex str = unsafePartial (fromRight (regex (escapeRegex str) global))
+    mkRegex str = unsafeRegex (escapeRegex str) global
 
 -- | Determine whether the second argument starts with the first one.
 startsWith :: String -> String -> Boolean

@@ -9,7 +9,7 @@ module Test.Input
   )
 where
 
-import Data.Array.NonEmpty       ( NonEmptyArray, fromArray, toNonEmpty )
+import Data.Array.NonEmpty       ( NonEmptyArray, fromArray )
 import Data.Maybe                ( fromJust )
 import Partial.Unsafe            ( unsafePartial )
 import Prelude
@@ -34,7 +34,7 @@ instance arbNegativeInt :: Arbitrary NegativeInt where
   arbitrary = NegativeInt <$> chooseInt bottom (-1)
 
 instance arbNewlineChar :: Arbitrary NewlineChar where
-  arbitrary = NewlineChar <$> elements (toNonEmpty newlineChars)
+  arbitrary = NewlineChar <$> elements newlineChars
 
 instance arbNonNegativeInt :: Arbitrary NonNegativeInt where
   arbitrary = NonNegativeInt <$> chooseInt 0 top
@@ -44,7 +44,7 @@ instance arbSurrogateCodePoint :: Arbitrary SurrogateCodePoint where
   arbitrary = SurrogateCodePoint <$> chooseInt 0xD800 0xDFFF
 
 instance arbWhiteSpaceChar :: Arbitrary WhiteSpaceChar where
-  arbitrary = WhiteSpaceChar <$> elements (toNonEmpty whiteSpaceChars)
+  arbitrary = WhiteSpaceChar <$> elements whiteSpaceChars
 
 instance arbOneCharString :: Arbitrary OneCharString where
   arbitrary = OneCharString <<< (unsafeCoerce :: Char -> String) <$> arbitrary
