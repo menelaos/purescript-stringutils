@@ -1,0 +1,27 @@
+{
+  "name": "purescript-stringutils",
+  "version": "1.0.0",
+  "description": "String utility functions that (for various reasons) are not in\r [`purescript-strings`](https://github.com/purescript/purescript-strings).\r Note that some of these functions use ECMAScript features that may not be\r available on older platforms.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menelaos/purescript-stringutils.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/menelaos/purescript-stringutils/issues"
+  },
+  "homepage": "https://github.com/menelaos/purescript-stringutils#readme",
+  "devDependencies": {
+    "purescript": "^0.14.0",
+    "spago": "^0.19.1"
+  }
+}
