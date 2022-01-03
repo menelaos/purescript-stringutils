@@ -19,7 +19,7 @@ export function endsWithPrimeImpl (searchString, position, s) {
   return s.endsWith(searchString, position);
 }
 
-function escapeRegexImpl (str) {
+export function escapeRegexImpl (str) {
   return str.replace(/[.*+?^${}()|[\]\-\\]/g, "\\$&");
 }
 
