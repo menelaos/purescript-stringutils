@@ -1,37 +1,37 @@
 "use strict";
 
-function codePointAtImpl (just, nothing, i, s) {
+export function codePointAtImpl (just, nothing, i, s) {
   var codePointArray = Array.from(s);
   var isWithinRange  = i >= 0 && i < codePointArray.length;
 
   return isWithinRange ? just(codePointArray[i].codePointAt(0)) : nothing;
 }
 
-function codePointAtPrimeImpl (just, nothing, i, s) {
+export function codePointAtPrimeImpl (just, nothing, i, s) {
   return i >= 0 && i < s.length ? just(s.codePointAt(i)) : nothing;
 }
 
-function endsWithImpl (searchString, s) {
+export function endsWithImpl (searchString, s) {
   return s.endsWith(searchString);
 }
 
-function endsWithPrimeImpl (searchString, position, s) {
+export function endsWithPrimeImpl (searchString, position, s) {
   return s.endsWith(searchString, position);
 }
 
-function escapeRegexImpl (str) {
+export function escapeRegexImpl (str) {
   return str.replace(/[.*+?^${}()|[\]\-\\]/g, "\\$&");
 }
 
-function fromCharArrayImpl (array) {
+export function fromCharArrayImpl (array) {
   return array.join("");
 }
 
-function includesImpl (searchString, str) {
+export function includesImpl (searchString, str) {
   return str.includes(searchString);
 }
 
-function includesPrimeImpl (needle, position, haystack) {
+export function includesPrimeImpl (needle, position, haystack) {
   // For negative `position` values, we search from the beginning of the
   // string. This is in accordance with the native
   // `String.prototype.include` function.
@@ -58,32 +58,32 @@ function includesPrimeImpl (needle, position, haystack) {
   return found;
 }
 
-function lengthImpl (str) {
+export function lengthImpl (str) {
   return Array.from(str).length;
 }
 
-function linesImpl (str) {
+export function linesImpl (str) {
   // See http://www.unicode.org/reports/tr18/#RL1.6
   return str.split(/\r\n|[\n\v\f\r\u0085\u2028\u2029]/);
 }
 
-function normalizeImpl (str) {
+export function normalizeImpl (str) {
   return str.normalize();
 }
 
-function normalizePrimeImpl (normalizationForm, str) {
+export function normalizePrimeImpl (normalizationForm, str) {
   return str.normalize(normalizationForm);
 }
 
-function padEndPrimeImpl (targetLength, str) {
+export function padEndPrimeImpl (targetLength, str) {
   return str.padEnd(targetLength);
 }
 
-function padStartPrimeImpl (targetLength, str) {
+export function padStartPrimeImpl (targetLength, str) {
   return str.padStart(targetLength);
 }
 
-function repeatImpl (just, nothing, n, str) {
+export function repeatImpl (just, nothing, n, str) {
   var result;
 
   try {
@@ -96,27 +96,27 @@ function repeatImpl (just, nothing, n, str) {
   return result;
 }
 
-function startsWithImpl (searchString, s) {
+export function startsWithImpl (searchString, s) {
   return s.startsWith(searchString);
 }
 
-function startsWithPrimeImpl (searchString, position, s) {
+export function startsWithPrimeImpl (searchString, position, s) {
   return s.startsWith(searchString, position);
 }
 
-function stripCharsImpl (chars, s) {
+export function stripCharsImpl (chars, s) {
   return s.replace(RegExp("[" + escapeRegexImpl(chars) + "]", "g"), "");
 }
 
-function stripDiacriticsImpl (str) {
+export function stripDiacriticsImpl (str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function toCharArrayImpl (str) {
+export function toCharArrayImpl (str) {
   return Array.from(str);
 }
 
-function unsafeCodePointAtImpl (i, s) {
+export function unsafeCodePointAtImpl (i, s) {
   var codePointArray = Array.from(s);
   var isWithinRange = i >= 0 && i < codePointArray.length;
 
@@ -128,7 +128,7 @@ function unsafeCodePointAtImpl (i, s) {
   }
 }
 
-function unsafeCodePointAtPrimeImpl (i, s) {
+export function unsafeCodePointAtPrimeImpl (i, s) {
   if (i >= 0 && i < s.length) {
     return s.codePointAt(i);
   }
@@ -137,7 +137,7 @@ function unsafeCodePointAtPrimeImpl (i, s) {
   }
 }
 
-function unsafeRepeatImpl (n, str) {
+export function unsafeRepeatImpl (n, str) {
   try {
     return str.repeat(n);
   }
@@ -146,32 +146,7 @@ function unsafeRepeatImpl (n, str) {
   }
 }
 
-function wordsImpl (s) {
+export function wordsImpl (s) {
   // Split at every Unicode whitespace character (25 as of Unicode 12.1)
   return s.split(/[\u000a-\u000d\u0085\u2028\u2029\u0009\u0020\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000]+/);
 }
-
-exports.codePointAtImpl            = codePointAtImpl;
-exports.codePointAtPrimeImpl       = codePointAtPrimeImpl;
-exports.endsWithImpl               = endsWithImpl;
-exports.endsWithPrimeImpl          = endsWithPrimeImpl;
-exports.escapeRegexImpl            = escapeRegexImpl;
-exports.fromCharArrayImpl          = fromCharArrayImpl;
-exports.includesImpl               = includesImpl;
-exports.includesPrimeImpl          = includesPrimeImpl;
-exports.lengthImpl                 = lengthImpl;
-exports.linesImpl                  = linesImpl;
-exports.normalizeImpl              = normalizeImpl;
-exports.normalizePrimeImpl         = normalizePrimeImpl;
-exports.padEndPrimeImpl            = padEndPrimeImpl;
-exports.padStartPrimeImpl          = padStartPrimeImpl;
-exports.repeatImpl                 = repeatImpl;
-exports.startsWithImpl             = startsWithImpl;
-exports.startsWithPrimeImpl        = startsWithPrimeImpl;
-exports.stripCharsImpl             = stripCharsImpl;
-exports.stripDiacriticsImpl        = stripDiacriticsImpl;
-exports.toCharArrayImpl            = toCharArrayImpl;
-exports.unsafeCodePointAtImpl      = unsafeCodePointAtImpl;
-exports.unsafeCodePointAtPrimeImpl = unsafeCodePointAtPrimeImpl;
-exports.unsafeRepeatImpl           = unsafeRepeatImpl;
-exports.wordsImpl                  = wordsImpl;
