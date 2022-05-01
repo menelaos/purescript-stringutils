@@ -1,5 +1,3 @@
-"use strict";
-
 export function codePointAtImpl (just, nothing, i, s) {
   var codePointArray = Array.from(s);
   var isWithinRange  = i >= 0 && i < codePointArray.length;

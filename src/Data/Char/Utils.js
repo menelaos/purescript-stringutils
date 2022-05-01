@@ -1,5 +1,3 @@
-"use strict";
-
 export function fromCodePointImpl (Just, Nothing, i) {
   return i >= 0 && i <= 0x10FFFF ? Just(String.fromCodePoint(i)) : Nothing;
 }
