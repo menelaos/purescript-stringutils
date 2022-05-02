@@ -1,6 +1,6 @@
 export function codePointAtImpl (just, nothing, i, s) {
-  var codePointArray = Array.from(s);
-  var isWithinRange  = i >= 0 && i < codePointArray.length;
+  const codePointArray = Array.from(s);
+  const isWithinRange  = i >= 0 && i < codePointArray.length;
 
   return isWithinRange ? just(codePointArray[i].codePointAt(0)) : nothing;
 }
@@ -33,20 +33,19 @@ export function includesPrimeImpl (needle, position, haystack) {
   // For negative `position` values, we search from the beginning of the
   // string. This is in accordance with the native
   // `String.prototype.include` function.
-  var pos = Math.max(0, position);
+  const pos = Math.max(0, position);
 
   // Converting to arrays takes care of any surrogate code points
-  var needleA    = Array.from(needle);
-  var haystackA  = Array.from(haystack).slice(pos);
-  var needleALen = needleA.length;
+  const needleA    = Array.from(needle);
+  const haystackA  = Array.from(haystack).slice(pos);
+  const needleALen = needleA.length;
 
-  var maxIndex = haystackA.length + 1 - needleALen;
-  var found    = false;
-  var i;
+  const maxIndex = haystackA.length + 1 - needleALen;
+  let found    = false;
 
   // Naive implementation, at some point we should check whether Boyer-Moore
   // or Knuth-Morris-Pratt are worthwhile
-  for (i = 0; i < maxIndex; i++) {
+  for (let i = 0; i < maxIndex; i++) {
     if (needleA.every(function (e, j) { return e === haystackA[i+j]; })) {
       found = true;
       break;
@@ -82,7 +81,7 @@ export function padStartPrimeImpl (targetLength, str) {
 }
 
 export function repeatImpl (just, nothing, n, str) {
-  var result;
+  let result;
 
   try {
     result = just(str.repeat(n));
@@ -115,8 +114,8 @@ export function toCharArrayImpl (str) {
 }
 
 export function unsafeCodePointAtImpl (i, s) {
-  var codePointArray = Array.from(s);
-  var isWithinRange = i >= 0 && i < codePointArray.length;
+  const codePointArray = Array.from(s);
+  const isWithinRange = i >= 0 && i < codePointArray.length;
 
   if (isWithinRange) {
     return codePointArray[i].codePointAt(0);
