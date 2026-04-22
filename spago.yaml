@@ -1,0 +1,19 @@
+package:
+  dependencies:
+    - arrays
+    - assert
+    - console
+    - effect
+    - functions
+    - integers
+    - maybe
+    - partial
+    - prelude
+    - quickcheck
+    - strings
+    - unsafe-coerce
+  name: stringutils
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 76.1.0
