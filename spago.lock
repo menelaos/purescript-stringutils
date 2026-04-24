@@ -5,13 +5,27 @@
         "path": "./",
         "core": {
           "dependencies": [
-            "arrays",
-            "functions",
-            "integers",
-            "maybe",
-            "prelude",
-            "strings",
-            "unsafe-coerce"
+            {
+              "arrays": ">=7.3.0 <8.0.0"
+            },
+            {
+              "functions": ">=6.0.0 <7.0.0"
+            },
+            {
+              "integers": ">=6.0.0 <7.0.0"
+            },
+            {
+              "maybe": ">=6.0.0 <7.0.0"
+            },
+            {
+              "prelude": ">=6.0.2 <7.0.0"
+            },
+            {
+              "strings": ">=6.0.1 <7.0.0"
+            },
+            {
+              "unsafe-coerce": ">=6.0.0 <7.0.0"
+            }
           ]
         },
         "test": {
