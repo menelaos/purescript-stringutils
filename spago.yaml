@@ -16,6 +16,12 @@ package:
       - effect
       - partial
       - quickcheck
+  publish:
+    version: 0.0.13
+    license: Apache-2.0
+    location:
+      githubOwner: menelaos
+      githubRepo: purescript-stringutils
 workspace:
   extraPackages: {}
   packageSet:
