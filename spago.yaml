@@ -1,18 +1,21 @@
 package:
   dependencies:
     - arrays
-    - assert
-    - console
-    - effect
     - functions
     - integers
     - maybe
-    - partial
     - prelude
-    - quickcheck
     - strings
     - unsafe-coerce
   name: stringutils
+  test:
+    main: Test.Main
+    dependencies:
+      - assert
+      - console
+      - effect
+      - partial
+      - quickcheck
 workspace:
   extraPackages: {}
   packageSet:

@@ -6,21 +6,22 @@
         "core": {
           "dependencies": [
             "arrays",
-            "assert",
-            "console",
-            "effect",
             "functions",
             "integers",
             "maybe",
-            "partial",
             "prelude",
-            "quickcheck",
             "strings",
             "unsafe-coerce"
           ]
         },
         "test": {
-          "dependencies": []
+          "dependencies": [
+            "assert",
+            "console",
+            "effect",
+            "partial",
+            "quickcheck"
+          ]
         }
       }
     },
